@@ -3,6 +3,9 @@ import random
 class EmptyBagException(Exception):
     pass
 
+class OccupiedSquareException(Exception):
+    pass
+
 class Tile:
     def __init__(self, letter, value):
         self.letter = letter
@@ -129,3 +132,275 @@ class TileBag:
     
     def put(self, tiles):
         self.tiles.extend(tiles)
+    
+class Square:
+    def __init__(self, multiplier = 1, bonusType = 'L'):
+        self.multiplier = multiplier
+        self.bonusType = bonusType
+
+
+class Board:
+    def __init__(self):
+        self.board = [
+            [   
+                [Square(multiplier = 3, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2),None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3, bonusType = 'W'), None]
+                ], 
+            [   
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None]
+                ],
+            [
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None] 
+                ],
+            [
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None]
+                ],
+            [
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None]
+                ],
+            [
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None]  
+                ],
+            [
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None]   
+                ],
+            [
+                [Square(multiplier = 3, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3, bonusType = 'W'), None]   
+                ],
+            [
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None]   
+                ],
+            [
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None]   
+                ],
+            [
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None]   
+                ],
+            [
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None]
+                ],
+            [
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None] 
+                ],
+            [
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2, bonusType = 'W'), None],
+                [Square(), None]
+                ],
+            [
+                [Square(multiplier = 3, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3, bonusType = 'W'), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 2),None],
+                [Square(), None],
+                [Square(), None],
+                [Square(multiplier = 3, bonusType = 'W'), None]
+                ] 
+        ]
+    
+    def put(self, tile, position = (0, 0)):
+        if self.board[position[0]][position[1]][1] != None:
+            raise OccupiedSquareException("Square already occupied.")
+        else:
+            self.board[position[0]][position[1]][1] = tile
