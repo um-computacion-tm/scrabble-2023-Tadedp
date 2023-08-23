@@ -6,6 +6,9 @@ class EmptyBagException(Exception):
 class OccupiedSquareException(Exception):
     pass
 
+class MissingTileInRackException(Exception):
+    pass
+
 class Tile:
     def __init__(self, letter, value):
         self.letter = letter
@@ -118,7 +121,7 @@ class TileBag:
         random.shuffle(self.tiles)
         
     def take(self, count):
-        tiles = []
+        tiles = [] 
         
         for i in range(count):
             if len(self.tiles) == 0:
@@ -404,3 +407,51 @@ class Board:
             raise OccupiedSquareException("Square already occupied.")
         else:
             self.board[position[0]][position[1]][1] = tile
+            
+    def wordScore(self, lenWord, firstTilePosition = (0, 0), increasingCoordinate = 0):
+        wordMultiplier = 1
+        score = 0
+        for i in range(firstTilePosition[increasingCoordinate], firstTilePosition[increasingCoordinate] + lenWord):
+            letterMultiplier = 1
+            
+            if increasingCoordinate == 0:
+                square = self.board[i][firstTilePosition[1]]
+            else:
+                square = self.board[firstTilePosition[0]][i]
+            
+            
+            if square[0].bonusType == 'L':
+                letterMultiplier = square[0].multiplier
+            else:
+                wordMultiplier = wordMultiplier * square[0].multiplier 
+            
+            score += letterMultiplier * square[1].value
+        
+        score = wordMultiplier * score
+        return score             
+    
+class Player:
+    def __init__(self):
+        self.rack = []
+        self.score = 0
+    
+    def takeTiles(self, tiles):
+        for tile in tiles:
+            self.rack.append(tile)
+            
+    def giveTiles(self, letters):
+        rackBackUp = self.rack.copy()
+        tiles = []
+        for i in range(len(letters)):
+            letterIndex = -1
+            for j in range(7 - i):
+                if self.rack[j].letter == letters[i].upper(): 
+                    letterIndex = j
+                    break
+            
+            if letterIndex == -1:
+                self.rack = rackBackUp
+                raise MissingTileInRackException(letters[i] + " letter missing in rack.")
+            else:
+                tiles.append(self.rack.pop(letterIndex))
+        return tiles
