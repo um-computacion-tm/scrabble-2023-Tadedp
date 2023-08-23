@@ -3,10 +3,12 @@ from unittest.mock import patch
 from game.models import (
     EmptyBagException,
     OccupiedSquareException,
+    MissingTileInRackException,
     Tile, 
     TileBag,
     Square,
-    Board
+    Board,
+    Player
     )
 
 class TestTile(unittest.TestCase):
@@ -15,7 +17,7 @@ class TestTile(unittest.TestCase):
         self.assertEqual(tile.letter, 'A')
         self.assertEqual(tile.value, 1)
     
-class TestTileBag(unittest.TestCase):
+class TestTileBag(unittest.TestCase):    
     @patch('random.shuffle')
     def testTileBag(self, patch_shuffle):
         bag = TileBag()
@@ -63,7 +65,7 @@ class TestSquare(unittest.TestCase):
         self.assertEqual(square.bonusType, 'W')
         
 class TestBoard(unittest.TestCase):
-    def testBoardSize(self):
+    def testBoardSize(self):    
         board = Board()
         self.assertEqual(len(board.board), 15)
         for i in range(15):
@@ -89,6 +91,108 @@ class TestBoard(unittest.TestCase):
         with self.assertRaises(OccupiedSquareException):
             board.put(tile2, (8, 2))
         self.assertEqual(board.board[8][2][1], tile)
+    
+    def testBoardHorizontalWordScore(self):
+        board = Board()
+        tile = Tile('H', 4)
+        tile2 = Tile('A', 1)
+        tile3 = Tile('S', 1)
+        board.put(tile, (5, 5))
+        board.put(tile2, (5, 6))
+        board.put(tile3, (5, 7))
+        self.assertEqual(board.wordScore(3, (5,5), 1), 14)
+
+    def testBoardVerticalWordScore(self):
+        board = Board()
+        tile = Tile('S', 1)
+        tile2 = Tile('T', 1)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('P', 3)
+        board.put(tile, (0, 0))
+        board.put(tile2, (1, 0))
+        board.put(tile3, (2, 0))
+        board.put(tile4, (3, 0))
+        self.assertEqual(board.wordScore(4, (0,0), 0), 27)
+
+class TestPlayer(unittest.TestCase):
+    def testPlayer(self):
+        player = Player()
+        self.assertEqual(player.rack, [])
+        self.assertEqual(player.score, 0)
+    
+    def testTakeATile(self):
+        player = Player()
+        tile = Tile('D', 2)
+        player.takeTiles([tile])
+        self.assertEqual(player.rack, [tile])
         
+    def testTakeTiles(self):
+        player = Player()
+        tile = Tile('D', 2)
+        tile2 = Tile('C', 3)
+        tile3 = Tile('B', 3)
+        player.takeTiles([tile, tile2, tile3])
+        self.assertEqual(player.rack, [tile, tile2, tile3])
+    
+    def testGiveATile(self):
+        player = Player()
+        tile1 = Tile('S', 1)
+        tile2 = Tile('B', 3)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('S', 1)
+        tile5 = Tile('T', 1)
+        tile6 = Tile('M', 3)
+        tile7 = Tile('F', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
+        player.takeTiles(tiles) 
+        result = player.giveTiles("f")
+        self.assertEqual(result, [tile7]) 
+        self.assertEqual(player.rack, [tile1, tile2, tile3, tile4, tile5, tile6])
+    
+    def testGiveTiles(self):
+        player = Player()
+        tile1 = Tile('S', 1)
+        tile2 = Tile('B', 3)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('S', 1)
+        tile5 = Tile('T', 1)
+        tile6 = Tile('M', 3)
+        tile7 = Tile('F', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
+        player.takeTiles(tiles) 
+        result = player.giveTiles("OsM")
+        self.assertEqual(result, [tile3, tile1, tile6]) 
+        self.assertEqual(player.rack, [tile2, tile4, tile5, tile7])
+    
+    def testMissingFirstTile(self):
+        player = Player()
+        tile1 = Tile('S', 1)
+        tile2 = Tile('B', 3)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('S', 1)
+        tile5 = Tile('T', 1)
+        tile6 = Tile('M', 3)
+        tile7 = Tile('F', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
+        player.takeTiles(tiles) 
+        with self.assertRaises(MissingTileInRackException):
+            result = player.giveTiles("R") 
+        self.assertEqual(player.rack, [tile1, tile2, tile3, tile4, tile5, tile6, tile7])
+    
+    def testMissingTile(self):
+        player = Player()
+        tile1 = Tile('S', 1)
+        tile2 = Tile('B', 3)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('S', 1)
+        tile5 = Tile('T', 1)
+        tile6 = Tile('M', 3)
+        tile7 = Tile('F', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
+        player.takeTiles(tiles) 
+        with self.assertRaises(MissingTileInRackException):
+            result = player.giveTiles("MpOf") 
+        self.assertEqual(player.rack, [tile1, tile2, tile3, tile4, tile5, tile6, tile7])
+
 if __name__ == '__main__':
     unittest.main()
