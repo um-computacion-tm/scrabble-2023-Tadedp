@@ -58,11 +58,38 @@ class TestSquare(unittest.TestCase):
         square = Square()
         self.assertEqual(square.multiplier, 1)
         self.assertEqual(square.bonusType, 'L')
+        self.assertEqual(square.tile, None)
     
     def testPremiumSquare(self):
         square = Square(3, 'W')
         self.assertEqual(square.multiplier, 3)
         self.assertEqual(square.bonusType, 'W')
+        self.assertEqual(square.tile, None)
+        
+    def testPutTile(self):
+        tile = Tile('', 0)
+        square = Square(2, 'W')
+        square.putTile(tile)
+        self.assertEqual(square.tile, tile)
+        
+    def testSquareValueLetterBonus(self):
+        square = Square(3)
+        tile = Tile('Z', 10)
+        square.putTile(tile)
+        result = square.squareValue()
+        self.assertEqual(result, 30)
+        
+    def testSquareValueWordBonus(self):
+        square = Square(2, 'W')
+        tile = Tile('Z', 10)
+        square.putTile(tile)
+        result = square.squareValue()
+        self.assertEqual(result, 10)
+        
+    def testSquareValueNoTile(self):
+        square = Square(2)
+        result = square.squareValue()
+        self.assertEqual(result, 0)
         
 class TestBoard(unittest.TestCase):
     def testBoardSize(self):    
@@ -75,13 +102,13 @@ class TestBoard(unittest.TestCase):
         board = Board()
         for i in range(15):
             for j in range(15):
-                self.assertEqual(board.board[i][j][1], None)
+                self.assertEqual(board.board[i][j].tile, None)
     
     def testBoardPut(self):
         board = Board()
         tile = Tile('A', 1)
         board.put(tile, (3, 5))
-        self.assertEqual(board.board[3][5][1], tile)
+        self.assertEqual(board.board[3][5].tile, tile)
         
     def testOccupiedSquare(self):
         board = Board()
@@ -90,7 +117,7 @@ class TestBoard(unittest.TestCase):
         tile2 = Tile('O', 1)
         with self.assertRaises(OccupiedSquareException):
             board.put(tile2, (8, 2))
-        self.assertEqual(board.board[8][2][1], tile)
+        self.assertEqual(board.board[8][2].tile, tile)
     
     def testBoardHorizontalWordScore(self):
         board = Board()
