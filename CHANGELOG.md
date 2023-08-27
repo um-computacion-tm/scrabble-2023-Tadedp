@@ -5,13 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2023-08-26
+
+### Added
+
+ - tile attribute in Square class: _Tile_ tile
+ - putTile method in Square class: putTile(_Tile_ tile) -> None
+ - squareValue method in Square class: squareValue() -> _int_ value
+
+### Changed
+
+ - Board class attribute board type from _[[[Square, Tile]]]_ to _[[Square]]_, saving from now on the Tile objects used by players in Square class instead of Board class, for a clearer and more intuitive code.  
+
+### Fixed
+
+ - Board class attribute board usage in Board class methods due to the change in its definition.
+
 ## [0.3.0] - 2023-08-22
 
 ### Added
 
  - Player class:
     - Attributes: _[Tile]_ rack, _int_ score
-    - Methods: takeTiles(_[Tiles]_ tiles) -> None, giveTiles(_str_ letters) -> _[Tiles]_ tiles
+    - Methods: takeTiles(_[Tile]_ tiles) -> None, giveTiles(_str_ letters) -> _[Tile]_ tiles
  - MissingTileInRack exception.
  - wordScore method in Board class: wordScore(_(int, int)_ firstTilePosition) -> _int_ score 
 
