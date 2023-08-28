@@ -143,7 +143,10 @@ class Square:
         self.tile = None
     
     def putTile(self, tile):
-        self.tile = tile
+        if self.tile != None:
+            raise OccupiedSquareException("Square already occupied.")
+        else:
+            self.tile = tile
         
     def squareValue(self):
         value = 0
@@ -414,12 +417,35 @@ class Board:
                 Square(multiplier = 3, bonusType = 'W')
                 ] 
         ]
-    
-    def put(self, tile, position = (0, 0)):
-        if self.board[position[0]][position[1]].tile != None:
-            raise OccupiedSquareException("Square already occupied.")
-        else:
-            self.board[position[0]][position[1]].tile = tile
+
+    def putWord(self, newTiles = [], increasingCoordinate = 0, firstTilePosition = (0, 0), boardTilesPositions = []):
+        lenWord = len(newTiles) + len(boardTilesPositions) 
+        for i in range(lenWord):
+            skipTile = False
+            if increasingCoordinate == 0:
+                for j in range(len(boardTilesPositions)):
+                    if firstTilePosition[0] + i == boardTilesPositions[j][0] and firstTilePosition[1] == boardTilesPositions[j][1]:
+                        boardTilesPositions.pop(j)
+                        skipTile = True
+                        break
+                if skipTile:
+                    continue
+                square = self.board[firstTilePosition[0] + i][firstTilePosition[1]]
+            
+            else:
+                for j in range(len(boardTilesPositions)):
+                    if firstTilePosition[0] == boardTilesPositions[j][0] and firstTilePosition[1] + i == boardTilesPositions[j][1]:    
+                        boardTilesPositions.pop(j)
+                        skipTile = True
+                        break
+                if skipTile:
+                    continue
+                square = self.board[firstTilePosition[0]][firstTilePosition[1] + i]
+        
+            try:
+                square.putTile(newTiles.pop(0))
+            except OccupiedSquareException:
+                raise OccupiedSquareException("Square for tile " + newTiles[0].letter + " already occupied.")
             
     def wordScore(self, lenWord, firstTilePosition = (0, 0), increasingCoordinate = 0):
         wordMultiplier = 1
