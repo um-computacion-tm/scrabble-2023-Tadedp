@@ -72,6 +72,15 @@ class TestSquare(unittest.TestCase):
         square.putTile(tile)
         self.assertEqual(square.tile, tile)
         
+    def testOccupiedSquare(self):
+        tile = Tile('A', 1)
+        square = Square()
+        square.putTile(tile)
+        tile2 = Tile('Q', 5)
+        with self.assertRaises(OccupiedSquareException):
+            square.putTile(tile2)
+        self.assertEqual(square.tile, tile)
+        
     def testSquareValueLetterBonus(self):
         square = Square(3)
         tile = Tile('Z', 10)
@@ -104,41 +113,83 @@ class TestBoard(unittest.TestCase):
             for j in range(15):
                 self.assertEqual(board.board[i][j].tile, None)
     
-    def testBoardPut(self):
+    def testPutWord(self):
         board = Board()
-        tile = Tile('A', 1)
-        board.put(tile, (3, 5))
-        self.assertEqual(board.board[3][5].tile, tile)
+        tile1 = Tile('A', 1)
+        tile2 = Tile('N', 1) 
+        tile3 = Tile('D', 2)
+        word = [tile1, tile2, tile3]
+        board.putWord(word, 0, (3, 5))
         
-    def testOccupiedSquare(self):
+        self.assertEqual(board.board[3][5].tile, tile1)    
+        self.assertEqual(board.board[4][5].tile, tile2)
+        self.assertEqual(board.board[5][5].tile, tile3)
+        
+    def testPutWordWithOneWordCombination(self):
         board = Board()
-        tile = Tile('H', 4)
-        board.put(tile, (8, 2))
-        tile2 = Tile('O', 1)
-        with self.assertRaises(OccupiedSquareException):
-            board.put(tile2, (8, 2))
-        self.assertEqual(board.board[8][2].tile, tile)
-    
+        tile1 = Tile('H', 4)
+        tile2 = Tile('A', 1) 
+        tile3 = Tile('V', 4)
+        tile4 = Tile('E', 1)
+        word = [tile1, tile2, tile3, tile4]
+        board.putWord(word, 1, (8, 2))
+        
+        tile5 = Tile('H', 4)
+        tile6 = Tile('S', 1)
+        word2 = [tile5, tile6]
+        board.putWord(word2, 0, (7, 3), [(8, 3)])
+        
+        self.assertEqual(board.board[8][2].tile, tile1)
+        self.assertEqual(board.board[8][3].tile, tile2)
+        self.assertEqual(board.board[8][4].tile, tile3)
+        self.assertEqual(board.board[8][5].tile, tile4)
+        self.assertEqual(board.board[7][3].tile, tile5)
+        self.assertEqual(board.board[9][3].tile, tile6)
+        
+    def testPutWordWithTwoWordCombination(self):
+        board = Board()
+        tile1 = Tile('C', 3)
+        tile2 = Tile('A', 1) 
+        tile3 = Tile('R', 1)
+        word = [tile1, tile2, tile3]
+        board.putWord(word, 1, (4, 10))
+        
+        tile4 = Tile('F', 4)
+        tile5 = Tile('I', 1)
+        tile6 = Tile('R', 1)
+        tile7 = Tile('E', 1)
+        word2 = [tile4, tile5, tile6, tile7]
+        board.putWord(word2, 1, (7, 9))
+ 
+        tile8 = Tile('A', 1)
+        tile9 = Tile('B', 3)
+        tile10 = Tile('N', 1)
+        word3 = [tile8, tile9, tile10]
+        board.putWord(word3, 0, (4, 10), [(4, 10), (7, 10)])
+        
+        self.assertEqual(board.board[4][10].tile, tile1)
+        self.assertEqual(board.board[4][11].tile, tile2)
+        self.assertEqual(board.board[4][12].tile, tile3)
+        
+        self.assertEqual(board.board[7][9].tile, tile4)
+        self.assertEqual(board.board[7][10].tile, tile5)
+        self.assertEqual(board.board[7][11].tile, tile6)
+        self.assertEqual(board.board[7][12].tile, tile7)
+        
+        self.assertEqual(board.board[5][10].tile, tile8)
+        self.assertEqual(board.board[6][10].tile, tile9)
+        self.assertEqual(board.board[8][10].tile, tile10)
+        
     def testBoardHorizontalWordScore(self):
         board = Board()
-        tile = Tile('H', 4)
-        tile2 = Tile('A', 1)
-        tile3 = Tile('S', 1)
-        board.put(tile, (5, 5))
-        board.put(tile2, (5, 6))
-        board.put(tile3, (5, 7))
+        word = [Tile('H', 4), Tile('A', 1), Tile('S', 1)]
+        board.putWord(word, 1, (5,5))
         self.assertEqual(board.wordScore(3, (5,5), 1), 14)
 
     def testBoardVerticalWordScore(self):
         board = Board()
-        tile = Tile('S', 1)
-        tile2 = Tile('T', 1)
-        tile3 = Tile('O', 1)
-        tile4 = Tile('P', 3)
-        board.put(tile, (0, 0))
-        board.put(tile2, (1, 0))
-        board.put(tile3, (2, 0))
-        board.put(tile4, (3, 0))
+        word = [Tile('S', 1), Tile('T', 1), Tile('O', 1), Tile('P', 3)]
+        board.putWord(word, 0, (0, 0))
         self.assertEqual(board.wordScore(4, (0,0), 0), 27)
 
 class TestPlayer(unittest.TestCase):
