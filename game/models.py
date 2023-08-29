@@ -157,6 +157,10 @@ class Square:
                 value = value * self.multiplier
         
         return value
+    
+    def resetBonus(self):
+        self.multiplier = 1
+        self.bonusType = 'L'
 
 class Board:
     def __init__(self):
@@ -445,9 +449,9 @@ class Board:
             try:
                 square.putTile(newTiles.pop(0))
             except OccupiedSquareException:
-                raise OccupiedSquareException("Square for tile " + newTiles[0].letter + " already occupied.")
+                raise OccupiedSquareException("Square already occupied.")
             
-    def wordScore(self, lenWord, firstTilePosition = (0, 0), increasingCoordinate = 0):
+    def wordScore(self, lenWord, increasingCoordinate = 0, firstTilePosition = (0, 0)):
         wordMultiplier = 1
         score = 0
         for i in range(firstTilePosition[increasingCoordinate], firstTilePosition[increasingCoordinate] + lenWord):
@@ -460,6 +464,9 @@ class Board:
                 wordMultiplier = wordMultiplier * square.multiplier 
             
             score = score + square.squareValue()
+            
+            if square.multiplier > 1:
+                square.resetBonus()
         
         score = wordMultiplier * score
         return score             
