@@ -5,11 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2023-09-04
+
+### Added
+
+ - Integration with CodeClimate.
+ - README document to show CodeClimate and CircleCI badges.
+ - putBonuses method in Board class: putBonuses(_[(int, int)]_ coordinates, _(int, str)_ bonus) -> None
+
+### Changed
+ 
+ - TileBag and Board constructors to a clearer and shorter ones.  
+
 ## [0.6.0] - 2023-08-29
 
 ### Added
 
- - Integration with CircleCi
+ - Integration with CircleCI.
  - Requirements.txt to contain references to the packages used in the project.
  - resetBonus method in Square class: resetBonus() -> None
 
