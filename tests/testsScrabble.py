@@ -124,7 +124,7 @@ class TestBoard(unittest.TestCase):
         for i in range(15):
             for j in range(15):
                 self.assertEqual(board.board[i][j].tile, None)
-    
+
     def testPutWord(self):
         board = Board()
         tile1 = Tile('A', 1)
