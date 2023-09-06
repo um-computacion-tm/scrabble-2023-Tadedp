@@ -280,6 +280,14 @@ class TestPlayer(unittest.TestCase):
         result = player.giveTiles("OsM")
         self.assertEqual(result, [tile3, tile1, tile6]) 
         self.assertEqual(player.rack, [tile2, tile4, tile5, tile7])
+        
+    def testSumScore(self):
+        player = Player()
+        self.assertEqual(player.score, 0)
+        player.sumScore(15)
+        self.assertEqual(player.score, 15)
+        player.sumScore(32)
+        self.assertEqual(player.score, 47)
     
     def testMissingFirstTile(self):
         player = Player()
