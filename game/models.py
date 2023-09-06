@@ -165,3 +165,6 @@ class Player:
             else:
                 tiles.append(self.rack.pop(letterIndex))
         return tiles
+    
+    def sumScore(self, score):
+        self.score += score
