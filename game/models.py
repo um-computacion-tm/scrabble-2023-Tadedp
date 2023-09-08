@@ -91,35 +91,29 @@ class Board:
                 self.board[14 - coordinate[0]][coordinate[1]]) = (
                 self.board[14 - coordinate[0]] [14 - coordinate[1]]) = Square(bonus[0], bonus[1])
  
-    def putWord(self, newTiles = [], increasingCoordinate = 0, firstTilePosition = (0, 0), boardTilesPositions = []):
-        lenWord = len(newTiles) + len(boardTilesPositions) 
+    def putHorizontalWord(self, newTiles = [], firstTilePosition = (0, 0), boardTilesPositions = []):
+        lenWord = len(newTiles) + len(boardTilesPositions)
         for i in range(lenWord):
-            skipTile = False
-            if increasingCoordinate == 0:
-                for j in range(len(boardTilesPositions)):
-                    if firstTilePosition[0] + i == boardTilesPositions[j][0] and firstTilePosition[1] == boardTilesPositions[j][1]:
-                        boardTilesPositions.pop(j)
-                        skipTile = True
-                        break
-                if skipTile:
-                    continue
-                square = self.board[firstTilePosition[0] + i][firstTilePosition[1]]
-            
-            else:
-                for j in range(len(boardTilesPositions)):
-                    if firstTilePosition[0] == boardTilesPositions[j][0] and firstTilePosition[1] + i == boardTilesPositions[j][1]:    
-                        boardTilesPositions.pop(j)
-                        skipTile = True
-                        break
-                if skipTile:
-                    continue
-                square = self.board[firstTilePosition[0]][firstTilePosition[1] + i]
+            if self.checkBoardTile((0, i), firstTilePosition, boardTilesPositions):
+                continue
+            square = self.board[firstTilePosition[0]][firstTilePosition[1] + i]
+            square.putTile(newTiles.pop(0))
+    
+    def putVerticalWord(self, newTiles = [], firstTilePosition = (0, 0), boardTilesPositions = []):
+        lenWord = len(newTiles) + len(boardTilesPositions)
+        for i in range(lenWord):
+            if self.checkBoardTile((i, 0), firstTilePosition, boardTilesPositions):
+                continue
+            square = self.board[firstTilePosition[0] + i][firstTilePosition[1]]
+            square.putTile(newTiles.pop(0))
         
-            try:
-                square.putTile(newTiles.pop(0))
-            except OccupiedSquareException:
-                raise OccupiedSquareException("Square already occupied.")
-            
+    def checkBoardTile(self, iteration = (0, 0),firstTilePosition = (0, 0), boardTilesPositions = []):
+        for j in range(len(boardTilesPositions)):
+            if firstTilePosition[0] + iteration[0] == boardTilesPositions[j][0] and firstTilePosition[1] + iteration[1] == boardTilesPositions[j][1]:
+                boardTilesPositions.pop(j)
+                return True
+        return False
+    
     def wordScore(self, lenWord, increasingCoordinate = 0, firstTilePosition = (0, 0)):
         wordMultiplier = 1
         score = 0
