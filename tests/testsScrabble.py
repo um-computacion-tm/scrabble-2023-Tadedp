@@ -125,13 +125,13 @@ class TestBoard(unittest.TestCase):
             for j in range(15):
                 self.assertEqual(board.board[i][j].tile, None)
 
-    def testPutWord(self):
+    def testPutVerticalWord(self):
         board = Board()
         tile1 = Tile('A', 1)
         tile2 = Tile('N', 1) 
         tile3 = Tile('D', 2)
         word = [tile1, tile2, tile3]
-        board.putWord(word, 0, (3, 5))
+        board.putVerticalWord(word, (3, 5))
         
         self.assertEqual(board.board[3][5].tile, tile1)    
         self.assertEqual(board.board[4][5].tile, tile2)
@@ -144,12 +144,12 @@ class TestBoard(unittest.TestCase):
         tile3 = Tile('V', 4)
         tile4 = Tile('E', 1)
         word = [tile1, tile2, tile3, tile4]
-        board.putWord(word, 1, (8, 2))
+        board.putHorizontalWord(word, (8, 2))
         
         tile5 = Tile('H', 4)
         tile6 = Tile('S', 1)
         word2 = [tile5, tile6]
-        board.putWord(word2, 0, (7, 3), [(8, 3)])
+        board.putVerticalWord(word2, (7, 3), [(8, 3)])
         
         self.assertEqual(board.board[8][2].tile, tile1)
         self.assertEqual(board.board[8][3].tile, tile2)
@@ -164,20 +164,20 @@ class TestBoard(unittest.TestCase):
         tile2 = Tile('A', 1) 
         tile3 = Tile('R', 1)
         word = [tile1, tile2, tile3]
-        board.putWord(word, 1, (4, 10))
+        board.putHorizontalWord(word, (4, 10))
         
         tile4 = Tile('F', 4)
         tile5 = Tile('I', 1)
         tile6 = Tile('R', 1)
         tile7 = Tile('E', 1)
         word2 = [tile4, tile5, tile6, tile7]
-        board.putWord(word2, 1, (7, 9))
+        board.putHorizontalWord(word2, (7, 9))
  
         tile8 = Tile('A', 1)
         tile9 = Tile('B', 3)
         tile10 = Tile('N', 1)
         word3 = [tile8, tile9, tile10]
-        board.putWord(word3, 0, (4, 10), [(4, 10), (7, 10)])
+        board.putVerticalWord(word3, (4, 10), [(4, 10), (7, 10)])
         
         self.assertEqual(board.board[4][10].tile, tile1)
         self.assertEqual(board.board[4][11].tile, tile2)
@@ -191,44 +191,29 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(board.board[5][10].tile, tile8)
         self.assertEqual(board.board[6][10].tile, tile9)
         self.assertEqual(board.board[8][10].tile, tile10)
-    
-    def testBoardOccupiedSquare(self):
-        board = Board()
-        tile1 = Tile('R', 1)
-        tile2 = Tile('E', 1)
-        tile3 = Tile('D', 2)
-        word = [tile1, tile2, tile3]
-        board.putWord(word, 1, (7,7))
-        tile4 = Tile('C', 3)
-        tile5 = Tile('A', 1)
-        tile6 = Tile('N', 1) 
-        word2 = [tile4, tile5, tile6]
-        with self.assertRaises(OccupiedSquareException):
-            board.putWord(word2, 1, (7,5))
-        self.assertEqual(board.board[7][7].tile, tile1)
         
     def testHorizontalWordScore(self):
         board = Board()
         word = [Tile('H', 4), Tile('A', 1), Tile('S', 1)]
-        board.putWord(word, 1, (5,5))
+        board.putHorizontalWord(word, (5,5))
         self.assertEqual(board.wordScore(3, 1, (5,5)), 14)
 
     def testVerticalWordScore(self):
         board = Board()
         word = [Tile('S', 1), Tile('T', 1), Tile('O', 1), Tile('P', 3)]
-        board.putWord(word, 0, (0, 0))
+        board.putVerticalWord(word, (0, 0))
         self.assertEqual(board.wordScore(4, 0, (0,0)), 27)
         
     def testThreeWordScores(self):
         board = Board()
         word1 = [Tile('H', 4), Tile('O', 1), Tile('M', 3), Tile('E', 1)]
-        board.putWord(word1, 0, (11, 0))
+        board.putVerticalWord(word1, (11, 0))
         self.assertEqual(board.wordScore(4, 0, (11,0)), 39)
         word2 = [Tile('O', 1), Tile('S', 1), Tile('T', 1), Tile('E', 1), Tile('L', 1)]
-        board.putWord(word2, 1, (11, 0), [(11, 0)])
+        board.putHorizontalWord(word2, (11, 0), [(11, 0)])
         self.assertEqual(board.wordScore(6, 1, (11,0)), 18)
         word3 = [Tile('M', 3), Tile('B', 3), Tile('E', 1), Tile('R', 1)]
-        board.putWord(word3, 1, (14, 0), [(14, 0)])
+        board.putHorizontalWord(word3, (14, 0), [(14, 0)])
         self.assertEqual(board.wordScore(5, 1, (14,0)), 10)
 
 class TestPlayer(unittest.TestCase):
