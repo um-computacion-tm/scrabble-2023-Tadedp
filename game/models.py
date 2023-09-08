@@ -109,9 +109,10 @@ class Board:
         
     def checkBoardTile(self, iteration = (0, 0),firstTilePosition = (0, 0), boardTilesPositions = []):
         for j in range(len(boardTilesPositions)):
-            if firstTilePosition[0] + iteration[0] == boardTilesPositions[j][0] and firstTilePosition[1] + iteration[1] == boardTilesPositions[j][1]:
+            if (firstTilePosition[0] + iteration[0], firstTilePosition[1] + iteration[1]) == boardTilesPositions[j]:
                 boardTilesPositions.pop(j)
                 return True
+        
         return False
     
     def wordScore(self, lenWord, increasingCoordinate = 0, firstTilePosition = (0, 0)):
