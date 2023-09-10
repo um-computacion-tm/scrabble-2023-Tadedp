@@ -11,3 +11,10 @@ class ScrabbleGame:
             self.players[i].takeTiles(playerTiles)
         
         self.currentPlayer = None
+    
+    def nextTurn(self):
+        if self.currentPlayer is None or self.currentPlayer == self.players[-1]:
+            self.currentPlayer = self.players[0]
+        else:
+            index = self.players.index(self.currentPlayer) + 1
+            self.currentPlayer = self.players[index]
