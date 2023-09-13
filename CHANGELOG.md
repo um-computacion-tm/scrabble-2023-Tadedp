@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2023-09-12
+
+### Added
+
+ - wordIsValid method in Board class: wordIsValid(_int_ wordLen, _int_ increasingCoordinate, _(int)_ firstTilePosition) -> Bool
+ - data type specification in all parameters of each method. 
+
 ## [0.11.0] - 2023-09-10
 
 ### Added
