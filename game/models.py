@@ -10,7 +10,7 @@ class MissingTileInRackException(Exception):
     pass
 
 class Tile:
-    def __init__(self, letter, value):
+    def __init__(self, letter: str, value: int):
         self.letter = letter
         self.value = value
         
@@ -26,7 +26,7 @@ class TileBag:
         self.tiles = [Tile(tile[0], tile[1]) for tile in tileValues for _ in range(tile[2])]
         random.shuffle(self.tiles)
         
-    def take(self, count):
+    def take(self, count: int):
         tiles = [] 
         
         for i in range(count):
@@ -43,12 +43,12 @@ class TileBag:
         self.tiles.extend(tiles)
     
 class Square:
-    def __init__(self, multiplier = 1, bonusType = 'L'):
+    def __init__(self, multiplier: int = 1, bonusType: str = 'L'):
         self.multiplier = multiplier
         self.bonusType = bonusType
         self.tile = None
     
-    def putTile(self, tile):
+    def putTile(self, tile: Tile):
         if self.tile != None:
             raise OccupiedSquareException("Square already occupied.")
         else:
@@ -84,38 +84,38 @@ class Board:
         coordinates = [(0,3), (3,0), (2,6), (6,2), (7, 3), (3, 7), (6, 6)]
         self.putBonuses(coordinates, (2, 'L'))
     
-    def putBonuses(self, coordinates, bonus):
-        for coordinate in coordinates:
+    def putBonuses(self, positions: list, bonus: tuple):
+        for coordinate in positions:
             self.board[coordinate[0]][coordinate[1]] = (
                 self.board[coordinate[0]][14 - coordinate[1]]) = (
                 self.board[14 - coordinate[0]][coordinate[1]]) = (
                 self.board[14 - coordinate[0]] [14 - coordinate[1]]) = Square(bonus[0], bonus[1])
  
-    def putHorizontalWord(self, newTiles = [], firstTilePosition = (0, 0), boardTilesPositions = []):
-        lenWord = len(newTiles) + len(boardTilesPositions)
+    def putHorizontalWord(self, newTiles: list, firstTilePosition: tuple, boardTiles: list = []):
+        lenWord = len(newTiles) + len(boardTiles)
         for i in range(lenWord):
-            if self.checkBoardTile((0, i), firstTilePosition, boardTilesPositions):
+            if self.checkBoardTiles((0, i), firstTilePosition, boardTiles):
                 continue
             square = self.board[firstTilePosition[0]][firstTilePosition[1] + i]
             square.putTile(newTiles.pop(0))
     
-    def putVerticalWord(self, newTiles = [], firstTilePosition = (0, 0), boardTilesPositions = []):
-        lenWord = len(newTiles) + len(boardTilesPositions)
+    def putVerticalWord(self, newTiles: list, firstTilePosition: tuple, boardTiles: list = []):
+        lenWord = len(newTiles) + len(boardTiles)
         for i in range(lenWord):
-            if self.checkBoardTile((i, 0), firstTilePosition, boardTilesPositions):
+            if self.checkBoardTiles((i, 0), firstTilePosition, boardTiles):
                 continue
             square = self.board[firstTilePosition[0] + i][firstTilePosition[1]]
             square.putTile(newTiles.pop(0))
         
-    def checkBoardTile(self, iteration = (0, 0),firstTilePosition = (0, 0), boardTilesPositions = []):
-        for j in range(len(boardTilesPositions)):
-            if (firstTilePosition[0] + iteration[0], firstTilePosition[1] + iteration[1]) == boardTilesPositions[j]:
-                boardTilesPositions.pop(j)
+    def checkBoardTiles(self, iteration: tuple, firstTilePosition: tuple, boardTiles: list):
+        for j in range(len(boardTiles)):
+            if (firstTilePosition[0] + iteration[0], firstTilePosition[1] + iteration[1]) == boardTiles[j]:
+                boardTiles.pop(j)
                 return True
         
         return False
     
-    def wordScore(self, lenWord, increasingCoordinate = 0, firstTilePosition = (0, 0)):
+    def wordScore(self, lenWord: int, increasingCoordinate: int, firstTilePosition: tuple):
         wordMultiplier = 1
         score = 0
         for i in range(firstTilePosition[increasingCoordinate], firstTilePosition[increasingCoordinate] + lenWord):
@@ -133,18 +133,28 @@ class Board:
                 square.resetBonus()
         
         score = wordMultiplier * score
-        return score             
+        return score    
+    
+    def wordIsValid(self, wordLen: int, increasingCoordinate: int, firstTilePosition: tuple):  
+        if increasingCoordinate == 0:
+            if firstTilePosition[0] + wordLen > 14 or firstTilePosition[1] > 14:
+                return False 
+        
+        else:
+            if firstTilePosition[0] > 14 or firstTilePosition[1] + wordLen > 14:
+                return False    
+        return True       
     
 class Player:
     def __init__(self):
         self.rack = []
         self.score = 0
     
-    def takeTiles(self, tiles):
+    def takeTiles(self, tiles: list):
         for tile in tiles:
             self.rack.append(tile)
             
-    def giveTiles(self, letters):
+    def giveTiles(self, letters: str):
         rackBackUp = self.rack.copy()
         tiles = []
         for i in range(len(letters)):
@@ -161,5 +171,5 @@ class Player:
                 tiles.append(self.rack.pop(letterIndex))
         return tiles
     
-    def sumScore(self, score):
+    def sumScore(self, score: int):
         self.score += score
