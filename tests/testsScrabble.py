@@ -215,6 +215,30 @@ class TestBoard(unittest.TestCase):
         word3 = [Tile('M', 3), Tile('B', 3), Tile('E', 1), Tile('R', 1)]
         board.putHorizontalWord(word3, (14, 0), [(14, 0)])
         self.assertEqual(board.wordScore(5, 1, (14,0)), 10)
+        
+    def testVerticalWordIsValid(self):
+        board = Board()
+        word = "University"
+        wordIsValid = board.wordIsValid(len(word), 0, (4, 14))
+        self.assertTrue(wordIsValid)
+    
+    def testHorizontalWordIsValid(self):
+        board = Board()
+        word = "University"
+        wordIsValid = board.wordIsValid(len(word), 1, (0, 0))
+        self.assertTrue(wordIsValid)
+    
+    def testVerticalWordIsInvalid(self):
+        board = Board()
+        word = "University"
+        wordIsValid = board.wordIsValid(len(word), 0, (12, 2))
+        self.assertFalse(wordIsValid)
+        
+    def testHorizontalWordIsInvalid(self):
+        board = Board()
+        word = "University"
+        wordIsValid = board.wordIsValid(len(word), 1, (1, 13))
+        self.assertFalse(wordIsValid)    
 
 class TestPlayer(unittest.TestCase):
     def testPlayer(self):
