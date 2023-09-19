@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2023-09-18
+
+### Added
+
+ - wordIsValid method in Board class(different method from the one added in version 0.12.0): wordIsValid(_str_ word, _int_ increasingCoordinate, _(int)_ firstTilePosition) -> Bool
+ - validFirstMove method in Board class: validFirstMove(_str_ word, _int_ increasingCoordinate, _(int)_ firstTilePosition) -> Bool
+
+### Changed 
+
+ - definition of wordIsValid method added in version 0.12.0: wordIsInside(_str_ word, _int_ increasingCoordinate, _(int)_ firstTilePosition) -> Bool
+ - definition of checkBoardTiles method added in version 0.9.0: checkBoardTiles(_(int)_ actualTilePosition, _[(int)]_ boardTiles) -> Bool
+
 ## [0.12.0] - 2023-09-12
 
 ### Added
