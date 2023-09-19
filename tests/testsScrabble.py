@@ -216,30 +216,54 @@ class TestBoard(unittest.TestCase):
         board.putHorizontalWord(word3, (14, 0), [(14, 0)])
         self.assertEqual(board.wordScore(5, 1, (14,0)), 10)
         
-    def testVerticalWordIsValid(self):
+    def testVerticalWordIsInside(self):
         board = Board()
         word = "University"
-        wordIsValid = board.wordIsValid(len(word), 0, (4, 14))
+        wordIsValid = board.wordIsInside(word, 0, (5, 14))
         self.assertTrue(wordIsValid)
     
-    def testHorizontalWordIsValid(self):
+    def testHorizontalWordIsInside(self):
         board = Board()
         word = "University"
-        wordIsValid = board.wordIsValid(len(word), 1, (0, 0))
+        wordIsValid = board.wordIsInside(word, 1, (0, 0))
         self.assertTrue(wordIsValid)
     
-    def testVerticalWordIsInvalid(self):
+    def testVerticalWordIsNotInside(self):
         board = Board()
         word = "University"
-        wordIsValid = board.wordIsValid(len(word), 0, (12, 2))
+        wordIsValid = board.wordIsInside(word, 0, (6, 2))
         self.assertFalse(wordIsValid)
         
-    def testHorizontalWordIsInvalid(self):
+    def testHorizontalWordIsNotInside(self):
         board = Board()
         word = "University"
-        wordIsValid = board.wordIsValid(len(word), 1, (1, 13))
+        wordIsValid = board.wordIsInside(word, 1, (0, 25))
         self.assertFalse(wordIsValid)    
-
+        
+    def testPlaceFirstHorizontalWordFine(self):
+        board = Board()
+        word = "Home"
+        wordIsValid = board.wordIsValid(word, 1, (7, 7))
+        self.assertTrue(wordIsValid)
+        
+    def testPlaceFirstHorizontalWordWrong(self):
+        board = Board()
+        word = "Home"
+        wordIsValid = board.wordIsValid(word, 1, (7, 0))
+        self.assertFalse(wordIsValid)
+        
+    def testPlaceFirstVerticalWordFine(self):
+        board = Board()
+        word = "Heart"
+        wordIsValid = board.wordIsValid(word, 0, (3, 7))
+        self.assertTrue(wordIsValid)
+        
+    def testPlaceFirsVerticaltWordWrong(self):
+        board = Board()
+        word = "Heart"
+        wordIsValid = board.wordIsValid(word, 0, (8, 7))
+        self.assertFalse(wordIsValid)
+        
 class TestPlayer(unittest.TestCase):
     def testPlayer(self):
         player = Player()
