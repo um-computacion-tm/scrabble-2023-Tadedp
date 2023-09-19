@@ -94,7 +94,8 @@ class Board:
     def putHorizontalWord(self, newTiles: list, firstTilePosition: tuple, boardTiles: list = []):
         lenWord = len(newTiles) + len(boardTiles)
         for i in range(lenWord):
-            if self.checkBoardTiles((0, i), firstTilePosition, boardTiles):
+            actualTilePosition = (firstTilePosition[0], firstTilePosition[1] + i)
+            if self.checkBoardTiles(actualTilePosition, boardTiles):
                 continue
             square = self.board[firstTilePosition[0]][firstTilePosition[1] + i]
             square.putTile(newTiles.pop(0))
@@ -102,14 +103,15 @@ class Board:
     def putVerticalWord(self, newTiles: list, firstTilePosition: tuple, boardTiles: list = []):
         lenWord = len(newTiles) + len(boardTiles)
         for i in range(lenWord):
-            if self.checkBoardTiles((i, 0), firstTilePosition, boardTiles):
+            actualTilePosition = (firstTilePosition[0] + i, firstTilePosition[1])
+            if self.checkBoardTiles(actualTilePosition, boardTiles):
                 continue
             square = self.board[firstTilePosition[0] + i][firstTilePosition[1]]
             square.putTile(newTiles.pop(0))
         
-    def checkBoardTiles(self, iteration: tuple, firstTilePosition: tuple, boardTiles: list):
+    def checkBoardTiles(self, actualTilePosition: tuple, boardTiles: list):
         for j in range(len(boardTiles)):
-            if (firstTilePosition[0] + iteration[0], firstTilePosition[1] + iteration[1]) == boardTiles[j]:
+            if actualTilePosition == boardTiles[j]:
                 boardTiles.pop(j)
                 return True
         
@@ -135,15 +137,29 @@ class Board:
         score = wordMultiplier * score
         return score    
     
-    def wordIsValid(self, wordLen: int, increasingCoordinate: int, firstTilePosition: tuple):  
-        if increasingCoordinate == 0:
-            if firstTilePosition[0] + wordLen > 14 or firstTilePosition[1] > 14:
-                return False 
+    def wordIsInside(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):  
+        wordLen = len(word) - 1
+        if firstTilePosition[0] > 14 or firstTilePosition[1] > 14:
+            return False
         
-        else:
-            if firstTilePosition[0] > 14 or firstTilePosition[1] + wordLen > 14:
-                return False    
+        if firstTilePosition[increasingCoordinate] + wordLen > 14:
+            return False 
+        
         return True       
+    
+    def wordIsValid(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
+        if self.board[7][7].tile == None:
+            return self.validFirstMove(word, increasingCoordinate, firstTilePosition)
+                
+    def validFirstMove(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
+        wordLen = len(word) - 1
+        if firstTilePosition[0] > 7 or firstTilePosition[1] > 7:
+            return False
+        
+        if firstTilePosition[increasingCoordinate] + wordLen < 7:
+            return False
+            
+        return True
     
 class Player:
     def __init__(self):
