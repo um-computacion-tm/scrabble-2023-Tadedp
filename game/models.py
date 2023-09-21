@@ -150,6 +150,8 @@ class Board:
     def wordIsValid(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
         if self.board[7][7].tile == None:
             return self.validFirstMove(word, increasingCoordinate, firstTilePosition)
+        else:
+            return self.validNotInitialMove(word, increasingCoordinate, firstTilePosition)
                 
     def validFirstMove(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
         wordLen = len(word) - 1
@@ -158,8 +160,23 @@ class Board:
         
         if firstTilePosition[increasingCoordinate] + wordLen < 7:
             return False
-            
         return True
+    
+    def validNotInitialMove(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
+        wordLen = len(word)
+        useBoardTile = False
+        actualPosition = [firstTilePosition[0], firstTilePosition[1]]
+        for i in range(wordLen):
+            actualSquare = self.board[actualPosition[0]][actualPosition[1]]
+           
+            if actualSquare.tile != None:
+                if actualSquare.tile.letter != word[i]:
+                    return False
+                useBoardTile = True
+            
+            actualPosition[increasingCoordinate] += 1
+         
+        return useBoardTile
     
 class Player:
     def __init__(self):
