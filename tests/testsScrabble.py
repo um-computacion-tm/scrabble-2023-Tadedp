@@ -218,52 +218,84 @@ class TestBoard(unittest.TestCase):
         
     def testVerticalWordIsInside(self):
         board = Board()
-        word = "University"
+        word = "UNIVERSITY"
         wordIsValid = board.wordIsInside(word, 0, (5, 14))
         self.assertTrue(wordIsValid)
     
     def testHorizontalWordIsInside(self):
         board = Board()
-        word = "University"
+        word = "UNIVERSITY"
         wordIsValid = board.wordIsInside(word, 1, (0, 0))
         self.assertTrue(wordIsValid)
     
     def testVerticalWordIsNotInside(self):
         board = Board()
-        word = "University"
+        word = "UNIVERSITY"
         wordIsValid = board.wordIsInside(word, 0, (6, 2))
         self.assertFalse(wordIsValid)
         
     def testHorizontalWordIsNotInside(self):
         board = Board()
-        word = "University"
+        word = "UNIVERSITY"
         wordIsValid = board.wordIsInside(word, 1, (0, 25))
         self.assertFalse(wordIsValid)    
         
     def testPlaceFirstHorizontalWordFine(self):
         board = Board()
-        word = "Home"
+        word = "HOME"
         wordIsValid = board.wordIsValid(word, 1, (7, 7))
         self.assertTrue(wordIsValid)
         
     def testPlaceFirstHorizontalWordWrong(self):
         board = Board()
-        word = "Home"
+        word = "HOME"
         wordIsValid = board.wordIsValid(word, 1, (7, 0))
         self.assertFalse(wordIsValid)
         
     def testPlaceFirstVerticalWordFine(self):
         board = Board()
-        word = "Heart"
+        word = "HEART"
         wordIsValid = board.wordIsValid(word, 0, (3, 7))
         self.assertTrue(wordIsValid)
         
-    def testPlaceFirsVerticaltWordWrong(self):
+    def testPlaceFirstVerticaltWordWrong(self):
         board = Board()
-        word = "Heart"
+        word = "HEART"
         wordIsValid = board.wordIsValid(word, 0, (8, 7))
         self.assertFalse(wordIsValid)
         
+    def testPlaceNotInitialHorizontalWordFine(self):
+        board = Board()
+        word1 = [Tile('H', 4), Tile('O', 1), Tile('M', 3), Tile('E', 1)]
+        board.putHorizontalWord(word1, (7, 7))
+        word2 = "HOMES"
+        wordIsValid = board.wordIsValid(word2, 1, (7, 7))
+        self.assertTrue(wordIsValid)
+        
+    def testPlaceNotInitialHorizontalWordWrong(self):
+        board = Board()
+        word1 = [Tile('H', 4), Tile('O', 1), Tile('M', 3), Tile('E', 1)]
+        board.putVerticalWord(word1, (4, 7))
+        word2 = "ENTER"
+        wordIsValid = board.wordIsValid(word2, 1, (7, 5))
+        self.assertFalse(wordIsValid)
+        
+    def testPlaceNotInitialVerticalWordFine(self):
+        board = Board()
+        word1 = [Tile('H', 4), Tile('O', 1), Tile('M', 3), Tile('E', 1)]
+        board.putHorizontalWord(word1, (7, 4))
+        word2 = "ENTER"
+        wordIsValid = board.wordIsValid(word2, 0, (4, 7))
+        self.assertTrue(wordIsValid)        
+    
+    def testPlaceNotInitialVerticaltWordWrong(self):
+        board = Board()
+        word1 = [Tile('H', 4), Tile('O', 1), Tile('M', 3), Tile('E', 1)]
+        board.putHorizontalWord(word1, (7, 6))
+        word2 = "ENTER"
+        wordIsValid = board.wordIsValid(word2, 0, (0, 0))
+        self.assertFalse(wordIsValid)        
+                
 class TestPlayer(unittest.TestCase):
     def testPlayer(self):
         player = Player()
