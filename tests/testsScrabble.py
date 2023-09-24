@@ -383,6 +383,32 @@ class TestPlayer(unittest.TestCase):
         with self.assertRaises(MissingTileInRackException):
             result = player.giveTiles("MpOf") 
         self.assertEqual(player.rack, [tile1, tile2, tile3, tile4, tile5, tile6, tile7])
+        
+    def testHaveTiles(self):
+        player = Player()
+        tile1 = Tile('S', 1)
+        tile2 = Tile('LL', 8)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('E', 1)
+        tile5 = Tile('E', 1)
+        tile6 = Tile('H', 4)
+        tile7 = Tile('F', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
+        player.takeTiles(tiles) 
+        self.assertEqual(player.haveTiles("hell"), True)
+        
+    def testDoesntHaveTiles(self):
+        player = Player()
+        tile1 = Tile('S', 1)
+        tile2 = Tile('O', 1)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('E', 1)
+        tile5 = Tile('E', 1)
+        tile6 = Tile('H', 4)
+        tile7 = Tile('F', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
+        player.takeTiles(tiles) 
+        self.assertEqual(player.haveTiles("hello"), False)        
 
 if __name__ == '__main__':
     unittest.main()
