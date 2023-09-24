@@ -204,5 +204,29 @@ class Player:
                 tiles.append(self.rack.pop(letterIndex))
         return tiles
     
+    def haveTiles(self, word: str):
+        while len(word) > 0:
+            if len(word) > 1:
+                if word[0 : 2].upper() == "LL" or word[0 : 2].upper() == "RR" or word[0 : 2].upper() == "CH":
+                    letter =  word[0 : 2].upper()
+                    word = word[2:]
+                else:
+                    letter = word[0].upper()
+                    word = word[1:]
+            else:
+                letter = word[0].upper()    
+                word = word[1:]
+                
+            letterInRack = False
+            for tile in self.rack:
+                if letter == tile.letter:
+                    letterInRack = True
+                    break
+            
+            if letterInRack == False:
+                return False
+        return True     
+                
+        
     def sumScore(self, score: int):
         self.score += score
