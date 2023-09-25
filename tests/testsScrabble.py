@@ -395,7 +395,7 @@ class TestPlayer(unittest.TestCase):
         tile7 = Tile('F', 4)
         tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
         player.takeTiles(tiles) 
-        self.assertEqual(player.haveTiles("hell"), True)
+        self.assertEqual(player.haveTiles("hello"), True)
         
     def testDoesntHaveTiles(self):
         player = Player()
