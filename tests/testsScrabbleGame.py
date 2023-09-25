@@ -1,7 +1,7 @@
 import unittest
 from game.scrabbleGame import ScrabbleGame
 
-class TestTile(unittest.TestCase):
+class TestScrabbleGame(unittest.TestCase):
     def testScrabbleGame(self):
         scrabbleGame = ScrabbleGame(2) 
         self.assertEqual(len(scrabbleGame.players), 2)
