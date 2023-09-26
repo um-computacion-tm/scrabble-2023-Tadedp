@@ -17,6 +17,11 @@ class TestTile(unittest.TestCase):
         self.assertEqual(tile.letter, 'A')
         self.assertEqual(tile.value, 1)
     
+    def testTileStringRepresentation(self):
+        tile = Tile('H', 4)
+        self.assertEqual(tile.__repr__(), "[H](4p.)")
+        
+    
 class TestTileBag(unittest.TestCase):    
     @patch('random.shuffle')
     def testTileBag(self, patch_shuffle):
@@ -111,7 +116,37 @@ class TestSquare(unittest.TestCase):
         square.resetBonus()
         self.assertEqual(square.bonusType, 'L')
         self.assertEqual(square.multiplier, 1)
-        
+    
+    def testWordMultiplierSquareStringRepresentation(self):
+        square = Square(2, 'W')
+        self.assertEqual(square.__repr__(),
+                         "┌─────┐\n" +
+                         "│ × 2 │\n" +
+                         "└─────┘")
+    
+    def testLetterMultiplierSquareStringRepresentation(self):
+        square = Square(3)
+        self.assertEqual(square.__repr__(),
+                         "┌─────┐\n" +
+                         "│ + 3 │\n" +
+                         "└─────┘")
+    
+    def testSquareWithOneLetterStringRepresentation(self):
+        square = Square(2, 'W')
+        square.tile = Tile(" ", 0)
+        self.assertEqual(square.__repr__(),
+                         "┌─────┐\n" +
+                         "│ [ ] │\n" +
+                         "└─────┘")
+    
+    def testSquareWithTwoLettersStringRepresentation(self):
+        square = Square(2, 'W')
+        square.tile = Tile("CH", 5)
+        self.assertEqual(square.__repr__(),
+                         "┌─────┐\n" +
+                         "│[CH] │\n" +
+                         "└─────┘")
+    
 class TestBoard(unittest.TestCase):
     def testBoardSize(self):    
         board = Board()
@@ -407,8 +442,54 @@ class TestPlayer(unittest.TestCase):
         tile6 = Tile('H', 4)
         tile7 = Tile('F', 4)
         tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
+        player.takeTiles(tiles)
+        self.assertEqual(player.haveTiles("hello"), False)  
+        
+    def testRackStringRepresentation(self):
+        player = Player()
+        tile1 = Tile('A', 1)
+        tile2 = Tile('M', 2)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('A', 1)
+        tile5 = Tile('E', 1)
+        tile6 = Tile('F', 4)
+        tile7 = Tile('Y', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
         player.takeTiles(tiles) 
-        self.assertEqual(player.haveTiles("hello"), False)        
-
+        self.assertEqual(player.__repr__(), 
+                " /║║ [A](1p.) ║ [M](2p.) ║ [O](1p.) ║ [A](1p.) ║ [E](1p.) ║ [F](4p.) ║ [Y](4p.) ║║\n" +
+                "|═╩╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩╝\n" + 
+                " ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯")
+    
+    def testRackWithTwoLetterTilesStringRepresentation(self):
+        player = Player()
+        tile1 = Tile('A', 1)
+        tile2 = Tile('LL', 8)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('CH', 5)
+        tile5 = Tile('E', 1)
+        tile6 = Tile('F', 4)
+        tile7 = Tile('Y', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7]
+        player.takeTiles(tiles) 
+        self.assertEqual(player.__repr__(), 
+                " /║║ [A](1p.) ║[LL](8p.) ║ [O](1p.) ║[CH](5p.) ║ [E](1p.) ║ [F](4p.) ║ [Y](4p.) ║║\n" +
+                "|═╩╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩╝\n" + 
+                " ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯")
+    
+    def testIncompleteRackStringRepresentation(self):
+        player = Player()
+        tile1 = Tile('A', 1)
+        tile2 = Tile(' ', 0)
+        tile3 = Tile('O', 1)
+        tile4 = Tile('F', 4)
+        tile5 = Tile('Y', 4)
+        tiles = [tile1, tile2, tile3, tile4, tile5]
+        player.takeTiles(tiles) 
+        self.assertEqual(player.__repr__(), 
+                " /║║ [A](1p.) ║ [ ](0p.) ║ [O](1p.) ║ [F](4p.) ║ [Y](4p.) ║          ║          ║║\n" +
+                "|═╩╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩╝\n" + 
+                " ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯")
+    
 if __name__ == '__main__':
     unittest.main()
