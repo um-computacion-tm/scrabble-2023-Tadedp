@@ -13,10 +13,13 @@ class Tile:
     def __init__(self, letter: str, value: int):
         self.letter = letter
         self.value = value
+    
+    def __repr__(self):
+        return str("[" + self.letter + "](" + str(self.value) + "p.)")
         
 class TileBag:
     def __init__(self):
-        tileValues = [('', 0, 2), ('A', 1, 12), ('E', 1, 12), ('O', 1, 9), ('I', 1, 6), 
+        tileValues = [(' ', 0, 2), ('A', 1, 12), ('E', 1, 12), ('O', 1, 9), ('I', 1, 6), 
                       ('S', 1, 6), ('N', 1, 5), ('R', 1, 5), ('U', 1, 5), ('L', 1, 4), 
                       ('T', 1, 4), ('D', 2, 5), ('G', 2, 2), ('C', 3, 4), ('B', 3, 2), 
                       ('M', 3, 2), ('P', 3, 2), ('H', 4, 2), ('F', 4, 1), ('V', 4, 1), 
@@ -67,7 +70,20 @@ class Square:
     def resetBonus(self):
         self.multiplier = 1
         self.bonusType = 'L'
-
+    
+    def __repr__(self):
+        if self.tile == None:
+            if self.bonusType == "W":
+                return "┌─────┐\n│ × " + str(self.multiplier) + " │\n└─────┘"
+            else:
+                if self.multiplier > 1:
+                    return "┌─────┐\n│ + " + str(self.multiplier) + " │\n└─────┘"
+        else:
+            if len(self.tile.letter) > 1:
+                return "┌─────┐\n│[" + self.tile.letter + "] │\n└─────┘"
+            else:
+                return "┌─────┐\n│ [" + self.tile.letter + "] │\n└─────┘"
+ 
 class Board:
     def __init__(self):
         self.board = [[Square() for _ in range(15)] for _ in range(15)]
@@ -177,7 +193,7 @@ class Board:
             actualPosition[increasingCoordinate] += 1
          
         return useBoardTile
-    
+        
 class Player:
     def __init__(self):
         self.rack = []
@@ -227,6 +243,20 @@ class Player:
                 return False
         return True     
                 
-        
     def sumScore(self, score: int):
         self.score += score
+    
+    def __repr__(self):
+        rack = " /║║"
+        for i in range(7):
+            if len(self.rack) < 7 and i >= len(self.rack):
+                rack = rack + "          ║"
+            else:
+                if len(self.rack[i].letter) > 1:
+                    rack = rack + str(self.rack[i]) + " ║"
+                else:        
+                    rack = rack + " " + str(self.rack[i]) + " ║"
+        rack = (rack + 
+                "║\n|═╩╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩╝\n" +
+                " ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯")  
+        return rack
