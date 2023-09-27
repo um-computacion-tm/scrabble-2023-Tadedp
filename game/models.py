@@ -74,15 +74,15 @@ class Square:
     def __repr__(self):
         if self.tile == None:
             if self.bonusType == "W":
-                return "┌─────┐\n│ × " + str(self.multiplier) + " │\n└─────┘"
+                return "x " + str(self.multiplier)
             else:
                 if self.multiplier > 1:
-                    return "┌─────┐\n│ + " + str(self.multiplier) + " │\n└─────┘"
+                    return "+ " + str(self.multiplier)
+                else:
+                    return "   "
         else:
-            if len(self.tile.letter) > 1:
-                return "┌─────┐\n│[" + self.tile.letter + "] │\n└─────┘"
-            else:
-                return "┌─────┐\n│ [" + self.tile.letter + "] │\n└─────┘"
+            tileEnd = self.tile.__repr__().index("]") + 1
+            return self.tile.__repr__()[0 : tileEnd]
  
 class Board:
     def __init__(self):
@@ -102,10 +102,10 @@ class Board:
     
     def putBonuses(self, positions: list, bonus: tuple):
         for coordinate in positions:
-            self.board[coordinate[0]][coordinate[1]] = (
-                self.board[coordinate[0]][14 - coordinate[1]]) = (
-                self.board[14 - coordinate[0]][coordinate[1]]) = (
-                self.board[14 - coordinate[0]] [14 - coordinate[1]]) = Square(bonus[0], bonus[1])
+            self.board[coordinate[0]][coordinate[1]] = Square(bonus[0], bonus[1])
+            self.board[coordinate[0]][14 - coordinate[1]] = Square(bonus[0], bonus[1])
+            self.board[14 - coordinate[0]][coordinate[1]] = Square(bonus[0], bonus[1])
+            self.board[14 - coordinate[0]] [14 - coordinate[1]] = Square(bonus[0], bonus[1])
  
     def putHorizontalWord(self, newTiles: list, firstTilePosition: tuple, boardTiles: list = []):
         lenWord = len(newTiles) + len(boardTiles)
@@ -193,6 +193,27 @@ class Board:
             actualPosition[increasingCoordinate] += 1
          
         return useBoardTile
+    
+    def __repr__(self):
+        board = (
+            "┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐\n")
+        
+        for i in range(15):    
+            board = board + "│" 
+            for j in range(15):
+                if i == 7 and j == 7 and self.board[i][j].tile == None:
+                    board = board + "  ★  │"
+                else:    
+                    board = (board + (self.board[i][j].__repr__()).center(5, " ") + "│")
+                if j == 14:
+                    board = board + "\n"
+            if i != 14:
+                board = (board + 
+            "├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤\n")
+            else:
+                board = (board + 
+            "└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘")
+        return board
         
 class Player:
     def __init__(self):
