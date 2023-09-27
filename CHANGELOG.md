@@ -5,11 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - 2023-09-26
+
+### Added
+
+ - repr() method in Board class.
+
+### Changed
+
+ - repr() method in Square class so that it only returns the content of the square (bonus or tile), not its outline.
+
+### Fixed
+ 
+ - putBonuses() method in Board class. Squares accesed from board with the same bonuses and in symmetrical positions were the same objects, making that changing one of them changed all. Now they all work as different objects. 
+
 ## [0.17.0] - 2023-09-25
 
 ### Added
 
- - repr method in Tile, Square and Player classes for their string representation during command line execution.
+ - repr() method in Tile, Square and Player classes for their string representation during command line execution.
 
 ## [0.16.0] - 2023-09-24
 
