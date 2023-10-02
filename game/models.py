@@ -91,7 +91,7 @@ class Board:
         coordinates = [(0,0), (0,7), (7,0)]
         self.putBonuses(coordinates, (3, 'W'))
 
-        coordinates = [(1,1), (2,2), (3,3), (4,4)]
+        coordinates = [(1,1), (2,2), (3,3), (4,4), (7,7)]
         self.putBonuses(coordinates, (2, 'W'))
         
         coordinates = [(5,1), (5,5), (1,5)]
@@ -171,6 +171,10 @@ class Board:
                 
     def validFirstMove(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
         wordLen = len(word) - 1
+        
+        if wordLen < 1:
+            return False
+        
         if firstTilePosition[0] > 7 or firstTilePosition[1] > 7:
             return False
         
@@ -181,8 +185,15 @@ class Board:
     def validNotInitialMove(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
         wordLen = len(word)
         useBoardTile = False
+        adjacentToPlayedWord = False
         actualPosition = [firstTilePosition[0], firstTilePosition[1]]
+        
+        actualPosition[increasingCoordinate] -= 1
+        if self.board[actualPosition[0]][actualPosition[1]].tile != None :
+            return False
+            
         for i in range(wordLen):
+            actualPosition[increasingCoordinate] += 1
             actualSquare = self.board[actualPosition[0]][actualPosition[1]]
            
             if actualSquare.tile != None:
@@ -190,16 +201,28 @@ class Board:
                     return False
                 useBoardTile = True
             
-            actualPosition[increasingCoordinate] += 1
-         
-        return useBoardTile
+            actualPosition[increasingCoordinate - 1] -= 1
+            if self.board[actualPosition[0]][actualPosition[1]].tile != None:
+                adjacentToPlayedWord = True
+            
+            actualPosition[increasingCoordinate - 1] += 2
+            if self.board[actualPosition[0]][actualPosition[1]].tile != None:
+                adjacentToPlayedWord = True
+            
+            if useBoardTile or adjacentToPlayedWord:
+                return True
+            
+            actualPosition[increasingCoordinate - 1] -= 1
+            
+        return False
     
     def __repr__(self):
-        board = (
+        spaces = "                              "
+        board = (spaces +
             "┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐\n")
         
         for i in range(15):    
-            board = board + "│" 
+            board = board + spaces + "│" 
             for j in range(15):
                 if i == 7 and j == 7 and self.board[i][j].tile == None:
                     board = board + "  ★  │"
@@ -208,10 +231,10 @@ class Board:
                 if j == 14:
                     board = board + "\n"
             if i != 14:
-                board = (board + 
+                board = (board + spaces + 
             "├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤\n")
             else:
-                board = (board + 
+                board = (board + spaces + 
             "└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘")
         return board
         
@@ -268,7 +291,8 @@ class Player:
         self.score += score
     
     def __repr__(self):
-        rack = " /║║"
+        spaces = "                                  " 
+        rack = spaces + " /║║"
         for i in range(7):
             if len(self.rack) < 7 and i >= len(self.rack):
                 rack = rack + "          ║"
@@ -278,6 +302,8 @@ class Player:
                 else:        
                     rack = rack + " " + str(self.rack[i]) + " ║"
         rack = (rack + 
-                "║\n|═╩╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩╝\n" +
+                "║\n" + spaces + 
+                "|═╩╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩══════════╩╝\n" +
+                spaces +
                 " ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯")  
         return rack
