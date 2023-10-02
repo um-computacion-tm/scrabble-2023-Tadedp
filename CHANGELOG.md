@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0] - 2023-10-1
+
+### Added
+
+ - DictionaryConnectionFailed exception.
+
+### Changed
+
+ - isInDictionary() method in Dictionary class to raise DictionaryConnectionFailed exception when pyrae.dle.search_by_word() fails.
+
+### Fixed
+
+ - validFirstMove() method in Board Class. The method was not considering the case of one letter words as invalid moves. Now the first word must also be at least two letters long to be considered valid. 
+ - validNotInitialMove() method in Board Class. The method was not considering the case of adjacent words as valid moves. Now both cases (adjacent words and using already played tiles) are considered valid moves. 
+ - Board class constructor. The square corresponding to the coordinates (7, 7) was not being counted as a premium square. Now it is also a double word score square.
+ - Log level of dle module used in dictionary module to not show log messages while playing the game. 
+
 ## [0.18.0] - 2023-09-26
 
 ### Added
