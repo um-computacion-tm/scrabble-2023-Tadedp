@@ -293,10 +293,10 @@ class TestBoard(unittest.TestCase):
         word = "HEART"
         wordIsValid = board.wordIsValid(word, 0, (8, 7))
         self.assertFalse(wordIsValid)
-    
+
     def testPlaceNotInitialAdjacentHorizontalWordFine(self):
         board = Board()
-        word1 = [Tile('R', 4), Tile('A', 1), Tile('S', 3), Tile('H', 1)]
+        word1 = [Tile('R', 1), Tile('A', 1), Tile('S', 1), Tile('H', 4)]
         board.putHorizontalWord(word1, (7, 7))
         word2 = "TEA"
         wordIsValid = board.wordIsValid(word2, 0, (7, 6))
@@ -304,7 +304,7 @@ class TestBoard(unittest.TestCase):
         
     def testPlaceNotInitialAdjacentHorizontalWordWrong(self):
         board = Board()
-        word1 = [Tile('T', 4), Tile('O', 1), Tile('Y', 3)]
+        word1 = [Tile('T', 1), Tile('O', 1), Tile('Y', 3)]
         board.putHorizontalWord(word1, (7, 7))
         word2 = [Tile('H', 4), Tile('O', 1), Tile('P', 3)]
         board.putHorizontalWord(word2, (7, 11))
@@ -359,6 +359,41 @@ class TestBoard(unittest.TestCase):
         word2 = "ENTER"
         wordIsValid = board.wordIsValid(word2, 0, (0, 0))
         self.assertFalse(wordIsValid)  
+    
+    def testOneFormedWord(self):
+        board = Board()
+        word1 = [Tile('H', 4), Tile('O', 1), Tile('M', 3), Tile('E', 1)]
+        board.putVerticalWord(word1, (7, 7))
+        word2 = "HOMES"
+        words = board.formedWords(word2, 0, (7, 7))
+        self.assertEqual(words, ["HOMES"])
+    
+    def testTwoFormedWords(self):
+        board = Board()
+        word1 = [Tile('G', 4), Tile('O', 1)]
+        board.putHorizontalWord(word1, (7, 7))
+        word2 = "EMERALD"
+        words = board.formedWords(word2, 0, (7, 6))
+        self.assertEqual(words, ["EMERALD", "EGO"])
+        
+    def testThreeFormedWords(self):
+        board = Board()
+        word1 = [Tile('H', 4), Tile('O', 1), Tile('M', 3), Tile('E', 1)]
+        board.putVerticalWord(word1, (7, 7))
+        word2 = "BY"
+        words = board.formedWords(word2, 0, (8, 8))
+        self.assertEqual(words, ["BY", "OB", "MY"])
+
+    def testFourFormedWords(self):
+        board = Board()
+        word1 = [Tile('H', 4), Tile('A', 1)]
+        board.putHorizontalWord(word1, (7, 7))
+        word1 = [Tile('F', 4), Tile('O', 1), Tile('R', 1)]
+        board.putHorizontalWord(word1, (9, 9))
+        word3 = "ABO"
+        words = board.formedWords(word3, 1, (8, 7))
+        self.assertEqual(words, ["ABO", "HA", "AB", "OF"])
+
         
     def testBoardStringRepresentation(self):
         board = Board()
