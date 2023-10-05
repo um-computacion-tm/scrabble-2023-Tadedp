@@ -183,17 +183,18 @@ class Board:
         return True
     
     def validNotInitialMove(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
-        wordLen = len(word)
         useBoardTile = False
         adjacentToPlayedWord = False
         actualPosition = [firstTilePosition[0], firstTilePosition[1]]
         
-        actualPosition[increasingCoordinate] -= 1
-        if self.board[actualPosition[0]][actualPosition[1]].tile != None :
-            return False
-            
-        for i in range(wordLen):
+        if actualPosition[increasingCoordinate] > 0:
+            actualPosition[increasingCoordinate] -= 1
+            if self.board[actualPosition[0]][actualPosition[1]].tile != None :
+                return False
+
             actualPosition[increasingCoordinate] += 1
+            
+        for i in range(len(word)):
             actualSquare = self.board[actualPosition[0]][actualPosition[1]]
            
             if actualSquare.tile != None:
@@ -201,21 +202,73 @@ class Board:
                     return False
                 useBoardTile = True
             
-            actualPosition[increasingCoordinate - 1] -= 1
-            if self.board[actualPosition[0]][actualPosition[1]].tile != None:
-                adjacentToPlayedWord = True
-            
-            actualPosition[increasingCoordinate - 1] += 2
-            if self.board[actualPosition[0]][actualPosition[1]].tile != None:
-                adjacentToPlayedWord = True
+            if actualPosition[increasingCoordinate - 1] > 0:
+                actualPosition[increasingCoordinate - 1] -= 1
+                if self.board[actualPosition[0]][actualPosition[1]].tile != None:
+                    adjacentToPlayedWord = True
+                actualPosition[increasingCoordinate - 1] += 1
+                
+            if actualPosition[increasingCoordinate - 1] < 14:
+                actualPosition[increasingCoordinate - 1] += 1
+                if self.board[actualPosition[0]][actualPosition[1]].tile != None:
+                    adjacentToPlayedWord = True
+                actualPosition[increasingCoordinate - 1] -= 1
             
             if useBoardTile or adjacentToPlayedWord:
                 return True
             
-            actualPosition[increasingCoordinate - 1] -= 1
-            
+            actualPosition[increasingCoordinate] += 1
         return False
     
+    def formedWords(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
+        words = [word]         
+        actualPosition = [firstTilePosition[0], firstTilePosition[1]]
+        for i in range(len(word)):
+            letterPosition = actualPosition.copy()
+            searchAfterTile = False
+            if actualPosition[increasingCoordinate - 1] > 0:
+                actualPosition[increasingCoordinate - 1] -= 1
+                if self.board[actualPosition[0]][actualPosition[1]].tile != None :
+                    words.append(self.searchExtraWord(increasingCoordinate - 1, letterPosition, word[i]))
+                else:
+                    searchAfterTile = True
+                actualPosition[increasingCoordinate - 1] += 1
+
+            if actualPosition[increasingCoordinate - 1] < 14 and searchAfterTile:
+                actualPosition[increasingCoordinate - 1] += 1
+                if self.board[actualPosition[0]][actualPosition[1]].tile != None :
+                    words.append(self.searchExtraWord(increasingCoordinate - 1, letterPosition, word[i]))
+                actualPosition[increasingCoordinate - 1] -= 1
+            
+            actualPosition[increasingCoordinate] += 1
+        return words
+        
+    def searchExtraWord(self, increasingCoordinate: int, letterPosition: tuple, letter: str):
+        actualPosition = letterPosition.copy()
+        while actualPosition[increasingCoordinate] > 0:
+            actualPosition[increasingCoordinate] -= 1
+            if self.board[actualPosition[0]][actualPosition[1]].tile != None :
+                continue
+            else:
+                actualPosition[increasingCoordinate] += 1
+                break
+            
+        if actualPosition == letterPosition:
+            word = letter
+        else:
+            word = self.board[actualPosition[0]][actualPosition[1]].tile.letter
+                    
+        while actualPosition[increasingCoordinate] < 14:
+            actualPosition[increasingCoordinate] += 1
+            if self.board[actualPosition[0]][actualPosition[1]].tile != None :
+                word += self.board[actualPosition[0]][actualPosition[1]].tile.letter
+                continue
+            else:
+                if actualPosition == letterPosition:
+                    word += letter    
+                break
+        return word
+            
     def __repr__(self):
         spaces = "                              "
         board = (spaces +
