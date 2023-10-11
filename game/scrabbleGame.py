@@ -51,10 +51,7 @@ class ScrabbleGame:
         words = self.board.formedWords(mainWord, increasingCoordinate, firstTilePosition)
         cutMainWord = self.validateMove(words, increasingCoordinate, firstTilePosition)
         cutMainWordCopy = cutMainWord
-        
-        #print(cutMainWord)
         positions = self.getPositions(cutMainWord)
-        #print(cutMainWord)
         newTiles = self.currentPlayer.giveTiles(positions)
         doubleLettersCounter = 0
         for i in range(len(newTiles)):

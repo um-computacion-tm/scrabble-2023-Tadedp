@@ -5,10 +5,6 @@ from game.models import *
 from game.scrabbleGame import *
 
 class TestScrabbleClient(unittest.TestCase):
-    #def testClient(self):
-        #client = ScrabbleCli()
-        #client.client()
-        
     @patch('builtins.input', return_value='3')
     def testGetPlayersCount(self, patchInput):
         self.assertEqual(ScrabbleCli.getPlayersCount(), 3)
@@ -46,33 +42,37 @@ class TestScrabbleClient(unittest.TestCase):
     @patch('builtins.input', side_effect=['5', '7', '1', 'T'])
     def testGetExchangeInputs(self, patchPrint, patchInput):
         bagLen = 100
-        playerRack = ([Tile('CH', 5), Tile('O', 1), Tile('A', 1), Tile(' ', 0), Tile('O', 1), 
+        player = Player()
+        player.rack = ([Tile('CH', 5), Tile('O', 1), Tile('A', 1), Tile(' ', 0), Tile('O', 1), 
                        Tile('S', 1), Tile(' ', 0)])
-        self.assertEqual(ScrabbleCli.getExchangeInputs(bagLen, playerRack), ([4, 6, 0]))
+        self.assertEqual(ScrabbleCli.getExchangeInputs(bagLen, player), ([4, 6, 0]))
     
     @patch('builtins.print')
     @patch('builtins.input', side_effect=['0'])
     def testGetExchangeInputsFullRackInput(self, patchPrint, patchInput):
         bagLen = 100
-        playerRack = ([Tile('CH', 5), Tile('O', 1), Tile('A', 1), Tile(' ', 0), Tile('O', 1), 
+        player = Player()
+        player.rack = ([Tile('CH', 5), Tile('O', 1), Tile('A', 1), Tile(' ', 0), Tile('O', 1), 
                        Tile('S', 1)])
-        self.assertEqual(ScrabbleCli.getExchangeInputs(bagLen, playerRack), ([0, 1, 2, 3, 4, 5]))
+        self.assertEqual(ScrabbleCli.getExchangeInputs(bagLen, player), ([0, 1, 2, 3, 4, 5]))
 
     @patch('builtins.print')
     @patch('builtins.input', side_effect=['7', '6', '5', '4', '3', '2', '1'])
     def testGetExchangeInputsAllInputs(self, patchPrint, patchInput):
         bagLen = 100
-        playerRack = ([Tile('CH', 5), Tile('O', 1), Tile('A', 1), Tile(' ', 0), Tile('O', 1), 
+        player = Player()
+        player.rack = ([Tile('CH', 5), Tile('O', 1), Tile('A', 1), Tile(' ', 0), Tile('O', 1), 
                        Tile('S', 1), Tile(' ', 0)])
-        self.assertEqual(ScrabbleCli.getExchangeInputs(bagLen, playerRack), ([6, 5, 4, 3, 2, 1, 0]))
+        self.assertEqual(ScrabbleCli.getExchangeInputs(bagLen, player), ([6, 5, 4, 3, 2, 1, 0]))
         
     @patch('builtins.print')
     @patch('builtins.input', side_effect=['A', '2', '10', '5', 'T'])
     def testGetExchangeInputsWrongInputs(self, patchPrint, patchInput):
         bagLen = 100
-        playerRack = ([Tile('CH', 5), Tile('O', 1), Tile('A', 1), Tile(' ', 0), Tile('O', 1), 
+        player = Player()
+        player.rack = ([Tile('CH', 5), Tile('O', 1), Tile('A', 1), Tile(' ', 0), Tile('O', 1), 
                        Tile('S', 1), Tile(' ', 0)])
-        self.assertEqual(ScrabbleCli.getExchangeInputs(bagLen, playerRack), ([1, 4]))
+        self.assertEqual(ScrabbleCli.getExchangeInputs(bagLen, player), ([1, 4]))
     
     @patch('builtins.print')
     @patch('builtins.input', side_effect=['S'])
