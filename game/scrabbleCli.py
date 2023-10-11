@@ -1,4 +1,5 @@
 from game.scrabbleGame import ScrabbleGame
+from game.models import *
 
 class ScrabbleCli:    
     def client(self):
@@ -137,13 +138,16 @@ class ScrabbleCli:
                 print("Error. Verifique los datos ingresados y vuelva a intentarlo.")
         return word, increasingCoordinate, firstTilePosition
 
-    def getExchangeInputs(bagLen: int, playerRack: list):
+    def getExchangeInputs(bagLen: int, player: Player):
         print("Ingrese las fichas que desea cambiar (1 a 7, \"0\" para atril completo, \"T\" terminar): ")
         positions = []
+        playerRack = player.rack
         exchangeInput = -1
         while exchangeInput != "T" and exchangeInput != "t":
             try:
                 exchangeInput = input(">> ")
+                if exchangeInput == "T" or exchangeInput == "t":
+                    break
                 exchangeInput = int(exchangeInput)
                 if exchangeInput == 0:
                     return [i for i in range(len(playerRack))]
@@ -159,8 +163,6 @@ class ScrabbleCli:
             except ValueError:
                 print("Error. Verifique el dato ingresado y vuelva a intentarlo.")
                 continue
-            
-        print(positions)
         return positions
         
     def getKeepPlayingInputs():
