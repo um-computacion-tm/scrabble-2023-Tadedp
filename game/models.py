@@ -1,14 +1,5 @@
 import random
 
-class EmptyBagException(Exception):
-    pass
-
-class OccupiedSquareException(Exception):
-    pass
-
-class MissingTileInRackException(Exception):
-    pass
-
 class Tile:
     def __init__(self, letter: str, value: int):
         self.letter = letter
@@ -30,19 +21,9 @@ class TileBag:
         random.shuffle(self.tiles)
         
     def take(self, count: int):
-        tiles = [] 
-        
-        for i in range(count):
-            if len(self.tiles) == 0:
-                if i == 0:
-                    raise EmptyBagException("The tile bag is empty.")
-                else:
-                    break
-            tiles.append(self.tiles.pop())
-        
-        return tiles
+        return [self.tiles.pop() for _ in range(count)]
     
-    def put(self, tiles):
+    def put(self, tiles : list):
         self.tiles.extend(tiles)
     
 class Square:
@@ -52,10 +33,7 @@ class Square:
         self.tile = None
     
     def putTile(self, tile: Tile):
-        if self.tile != None:
-            raise OccupiedSquareException("Square already occupied.")
-        else:
-            self.tile = tile
+        self.tile = tile
         
     def squareValue(self):
         value = 0
@@ -74,15 +52,18 @@ class Square:
     def __repr__(self):
         if self.tile == None:
             if self.bonusType == "W":
-                return "x " + str(self.multiplier)
+                return "Wx" + str(self.multiplier)
             else:
                 if self.multiplier > 1:
-                    return "+ " + str(self.multiplier)
+                    return "Lx" + str(self.multiplier)
                 else:
                     return "   "
         else:
-            tileEnd = self.tile.__repr__().index("]") + 1
-            return self.tile.__repr__()[0 : tileEnd]
+            tileEnd = self.tile.__repr__().index("]")
+            if self.tile.value > 0:
+                return self.tile.__repr__()[0 : tileEnd + 1]
+            else:
+                return self.tile.__repr__()[0 : tileEnd] + "*" + self.tile.__repr__()[tileEnd]
  
 class Board:
     def __init__(self):
@@ -106,32 +87,16 @@ class Board:
             self.board[coordinate[0]][14 - coordinate[1]] = Square(bonus[0], bonus[1])
             self.board[14 - coordinate[0]][coordinate[1]] = Square(bonus[0], bonus[1])
             self.board[14 - coordinate[0]] [14 - coordinate[1]] = Square(bonus[0], bonus[1])
- 
-    def putHorizontalWord(self, newTiles: list, firstTilePosition: tuple, boardTiles: list = []):
-        lenWord = len(newTiles) + len(boardTiles)
-        for i in range(lenWord):
-            actualTilePosition = (firstTilePosition[0], firstTilePosition[1] + i)
-            if self.checkBoardTiles(actualTilePosition, boardTiles):
-                continue
-            square = self.board[firstTilePosition[0]][firstTilePosition[1] + i]
-            square.putTile(newTiles.pop(0))
     
-    def putVerticalWord(self, newTiles: list, firstTilePosition: tuple, boardTiles: list = []):
-        lenWord = len(newTiles) + len(boardTiles)
-        for i in range(lenWord):
-            actualTilePosition = (firstTilePosition[0] + i, firstTilePosition[1])
-            if self.checkBoardTiles(actualTilePosition, boardTiles):
+    def putWord(self, newTiles: list, increasingCoordinate: int, firstTilePosition: tuple):
+        actualPosition = [firstTilePosition[0], firstTilePosition[1]]
+        while len(newTiles) > 0:
+            square = self.board[actualPosition[0]][actualPosition[1]]
+            if square.tile != None:
+                actualPosition[increasingCoordinate] += 1
                 continue
-            square = self.board[firstTilePosition[0] + i][firstTilePosition[1]]
             square.putTile(newTiles.pop(0))
-        
-    def checkBoardTiles(self, actualTilePosition: tuple, boardTiles: list):
-        for j in range(len(boardTiles)):
-            if actualTilePosition == boardTiles[j]:
-                boardTiles.pop(j)
-                return True
-        
-        return False
+            actualPosition[increasingCoordinate] += 1
     
     def wordScore(self, lenWord: int, increasingCoordinate: int, firstTilePosition: tuple):
         wordMultiplier = 1
@@ -155,7 +120,7 @@ class Board:
     
     def wordIsInside(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):  
         wordLen = len(word) - 1
-        if firstTilePosition[0] > 14 or firstTilePosition[1] > 14:
+        if firstTilePosition[0] > 14 or firstTilePosition[0] < 0 or firstTilePosition[1] > 14 or firstTilePosition[1] < 0:
             return False
         
         if firstTilePosition[increasingCoordinate] + wordLen > 14:
@@ -175,11 +140,12 @@ class Board:
         if wordLen < 1:
             return False
         
-        if firstTilePosition[0] > 7 or firstTilePosition[1] > 7:
+        if firstTilePosition[increasingCoordinate] > 7 or firstTilePosition[increasingCoordinate] + wordLen < 7: 
             return False
         
-        if firstTilePosition[increasingCoordinate] + wordLen < 7:
+        if firstTilePosition[increasingCoordinate - 1] != 7:
             return False
+    
         return True
     
     def validNotInitialMove(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
@@ -193,12 +159,19 @@ class Board:
                 return False
 
             actualPosition[increasingCoordinate] += 1
-            
-        for i in range(len(word)):
+        
+        while len(word) > 0:
+            if len(word) > 2 and (word[0 : 2] == "LL" or word[0 : 2] == "RR" or word[0 : 2] == "CH"):
+                letter = word[0 : 2]
+                word = word[2:]
+            else:
+                letter = word[0]
+                word = word[1:]
+                
             actualSquare = self.board[actualPosition[0]][actualPosition[1]]
            
             if actualSquare.tile != None:
-                if actualSquare.tile.letter != word[i]:
+                if actualSquare.tile.letter != letter:
                     return False
                 useBoardTile = True
             
@@ -221,9 +194,13 @@ class Board:
         return False
     
     def formedWords(self, word: str, increasingCoordinate: int, firstTilePosition: tuple):
-        words = [word]         
+        words = [[word]]         
         actualPosition = [firstTilePosition[0], firstTilePosition[1]]
         for i in range(len(word)):
+            words[0].append(self.board[actualPosition[0]][actualPosition[1]])
+            if self.board[actualPosition[0]][actualPosition[1]].tile != None:
+                actualPosition[increasingCoordinate] += 1
+                continue
             letterPosition = actualPosition.copy()
             searchAfterTile = False
             if actualPosition[increasingCoordinate - 1] > 0:
@@ -254,21 +231,45 @@ class Board:
                 break
             
         if actualPosition == letterPosition:
-            word = letter
+            word = [letter]
         else:
-            word = self.board[actualPosition[0]][actualPosition[1]].tile.letter
-                    
-        while actualPosition[increasingCoordinate] < 14:
+            word = [self.board[actualPosition[0]][actualPosition[1]].tile.letter]
+        word.append(self.board[actualPosition[0]][actualPosition[1]])
+        
+        while actualPosition[increasingCoordinate] < 14:    
             actualPosition[increasingCoordinate] += 1
             if self.board[actualPosition[0]][actualPosition[1]].tile != None :
-                word += self.board[actualPosition[0]][actualPosition[1]].tile.letter
+                word[0] += self.board[actualPosition[0]][actualPosition[1]].tile.letter
+                word.append(self.board[actualPosition[0]][actualPosition[1]])
                 continue
             else:
                 if actualPosition == letterPosition:
-                    word += letter    
+                    word[0] += letter 
+                    word.append(self.board[actualPosition[0]][actualPosition[1]])
+                    continue   
                 break
         return word
-            
+
+    def removeWordBoardTiles(self, word: str, increasingCoordinate: int, firstTilePosition: tuple): 
+        lenWord = len(word)
+        lettersCounter = 0
+        boardTilescounter = 0
+        actualPosition = [firstTilePosition[0], firstTilePosition[1]]
+        while lettersCounter < lenWord:
+            if self.board[actualPosition[0]][actualPosition[1]].tile != None:
+                if len(self.board[actualPosition[0]][actualPosition[1]].tile.letter) > 1:
+                    word = word[0 : lettersCounter - boardTilescounter] + word[ lettersCounter + 2 - boardTilescounter:]
+                else:    
+                    word = word[0 : lettersCounter - boardTilescounter] + word[ lettersCounter + 1 - boardTilescounter:]
+                boardTilescounter += 1  
+            else:
+                if len(word[lettersCounter:]) > 2 and (word[lettersCounter : lettersCounter+2] == "LL" or word[lettersCounter : lettersCounter+2] == "RR" or word[lettersCounter : lettersCounter+2] == "CH"):
+                    lettersCounter += 2
+                else:
+                    lettersCounter += 1
+            actualPosition[increasingCoordinate] += 1
+        return word
+
     def __repr__(self):
         spaces = "                              "
         board = (spaces +
@@ -300,24 +301,17 @@ class Player:
         for tile in tiles:
             self.rack.append(tile)
             
-    def giveTiles(self, letters: str):
-        rackBackUp = self.rack.copy()
+    def giveTiles(self, positions: list):
         tiles = []
-        for i in range(len(letters)):
-            letterIndex = -1
-            for j in range(7 - i):
-                if self.rack[j].letter == letters[i].upper(): 
-                    letterIndex = j
-                    break
-            
-            if letterIndex == -1:
-                self.rack = rackBackUp
-                raise MissingTileInRackException(letters[i] + " letter missing in rack.")
-            else:
-                tiles.append(self.rack.pop(letterIndex))
+        for i in range(len(positions)):
+            tiles.append(self.rack.pop(positions[i]))
+            for j in range(len(positions)):
+                if positions[i] < positions[j]:
+                    positions[j] -= 1
         return tiles
-    
+   
     def haveTiles(self, word: str):
+        usedTiles = []
         while len(word) > 0:
             if len(word) > 1:
                 if word[0 : 2].upper() == "LL" or word[0 : 2].upper() == "RR" or word[0 : 2].upper() == "CH":
@@ -331,13 +325,21 @@ class Player:
                 word = word[1:]
                 
             letterInRack = False
-            for tile in self.rack:
-                if letter == tile.letter:
+            for i in range(len(self.rack)):
+                if letter == self.rack[i].letter and usedTiles.count(i) < 1:
                     letterInRack = True
+                    usedTiles.append(i)
                     break
-            
+                
             if letterInRack == False:
-                return False
+                hasBlankTile = False
+                for i in range(len(self.rack)):
+                    if self.rack[i].letter == " " and usedTiles.count(i) < 1:
+                        hasBlankTile = True
+                        usedTiles.append(i)
+                        break
+                if not hasBlankTile:
+                    return False
         return True     
                 
     def sumScore(self, score: int):
