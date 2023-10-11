@@ -4,7 +4,8 @@ from game.models import *
 from game.scrabbleCli import *
 from game.main import *
 
-class TestMainDictionary(unittest.TestCase):
+class TestMain(unittest.TestCase):
+    
     @patch.object(ScrabbleCli, 'getPlayersCount', return_value=2)
     @patch.object(ScrabbleGame, 'nextTurn')
     @patch.object(ScrabbleGame, 'playing', return_value=True)
@@ -17,7 +18,7 @@ class TestMainDictionary(unittest.TestCase):
     @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=False)
     @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 24])
     @patch('builtins.print')
-    def testClient(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
+    def testMain(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
                    patchgetPlayerRack, patchgetPlayerMove, patchgetWordInputs, patchplayWord,
                    patchgetPlayers, patchgetKeepPlayingInputs, patchgetFinalScores, patchPrint):
         main()
