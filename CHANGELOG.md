@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2023-10-11
+
+### ¡¡¡Scrabble is now playable!!! 
+
+### Added
+
+ - Main.
+ - ScrabbleCli class: 
+   - Methods: client() -> None, getPlayersCount() -> _int_ playersCount, getPlayerMove() -> _int_ move, getWordInputs() -> (_str_ word, _int_ increasingCoordinate, _(int)_ firstTilePosition), getExchangeInputs(_int_ bagLen, _Player_ player) -> _[int]_ positions, getKeepPlayingInputs() -> None, getFinalScores( _[Player]_ players) -> _[int]_ scores.
+ - Exceptions:
+   - WordIsNotInDictionary exception.
+   - WordIsNotInsideBoard exception.
+   - WordPlacementIsNotValid exception.
+   - PlayerDoesNotHaveNeededTiles exception.
+   - InsufficientTilesInBag exception.
+ - Methods in ScrabbleGame Class: getBoard() -> _Board_ board, getPlayerRack() -> _Player_ currentPlayer, getBagRemainingTiles() -> _int_ tiles, getPlayers() -> _[Player]_ players, playWord(_str_ mainWord, _int_ increasingCoordinate, _(int)_ firstTilePosition) -> None, exchangeTiles( _[int]_ positions) -> None, validateMove( _[[str, Tile]]_ words, _int_ increasingCoordinate, _(int)_ firstTilePosition), playing(_int_ consecutivePasses) -> Bool, getPositions( _str_ cutMainWord) -> _[int]_ positions.
+ - test.sh script to run codeclimate and coverage locally.
+
+### Removed
+
+ - All previous exceptions except DictionaryConnectionFailed exception.
+ 
 ## [0.20.0] - 2023-10-4
 
 ### Added
