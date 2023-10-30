@@ -1,5 +1,5 @@
 from game.scrabbleGame import ScrabbleGame
-from game.models import *
+from game.models import Player
 
 class ScrabbleCli:    
     def client(self):
@@ -142,21 +142,18 @@ class ScrabbleCli:
         print("Ingrese las fichas que desea cambiar (1 a 7, \"0\" para atril completo, \"T\" terminar): ")
         positions = []
         playerRack = player.rack
-        exchangeInput = -1
-        while exchangeInput != "T" and exchangeInput != "t":
+        while True:
             try:
                 exchangeInput = input(">> ")
                 if exchangeInput == "T" or exchangeInput == "t":
                     break
+                
                 exchangeInput = int(exchangeInput)
                 if exchangeInput == 0:
                     return [i for i in range(len(playerRack))]
                 else:        
-                    if exchangeInput > 0 and exchangeInput < (len(playerRack) + 1) and not (exchangeInput - 1) in positions:
-                        positions.append(exchangeInput - 1)                
-                    else:
-                        raise ValueError
-
+                    ScrabbleCli.appendPositions(exchangeInput, playerRack, positions)
+                
                 if len(positions) == bagLen or len(positions) == len(playerRack):
                     break
             
@@ -165,6 +162,12 @@ class ScrabbleCli:
                 continue
         return positions
         
+    def appendPositions(exchangeInput: int, playerRack: list, positions: list):
+        if exchangeInput > 0 and exchangeInput < (len(playerRack) + 1) and not (exchangeInput - 1) in positions:
+            positions.append(exchangeInput - 1)                
+        else:
+            raise ValueError
+
     def getKeepPlayingInputs():
         while True:
             keepPlaying = input("¿Continuar jugando? (S/N): ")

@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import patch
-from game.models import *
 from game.scrabbleGame import *
 
 class TestScrabbleGame(unittest.TestCase):
@@ -49,6 +48,20 @@ class TestScrabbleGame(unittest.TestCase):
         scrabbleGame = ScrabbleGame(2)
         scrabbleGame.nextTurn()
         scrabbleGame.playWord("HELLO", 1, (7,7))
+        
+    @patch.object(Board, 'formedWords', return_value=["ACHE"])
+    @patch.object(ScrabbleGame, 'validateMove', return_value="ACHE")
+    @patch.object(ScrabbleGame, 'getPositions', return_value=[0, 1, 2])
+    @patch.object(Player, 'giveTiles', return_value=[Tile("A", 1), Tile(" ", 0), Tile("E", 1)])
+    @patch.object(Board, 'putWord')
+    @patch.object(Board, 'wordScore', return_value=4)
+    @patch.object(Player, 'sumScore')
+    @patch.object(Player, 'takeTiles')
+    def testPlayWordComplex(self, patchFormedWords, patchValidateMove, patchGetPositions, 
+                     patchGiveTiles, patchPutWord, patchWordScore, patchSumScore, patchTakeTiles):
+        scrabbleGame = ScrabbleGame(2)
+        scrabbleGame.nextTurn()
+        scrabbleGame.playWord("ACHE", 1, (7,7))
         
     @patch.object(ScrabbleGame, 'getBagRemainingTiles', return_value=1)
     def testRaiseInsufficientTilesInBagException(self, patchGetBagRemainingTiles):

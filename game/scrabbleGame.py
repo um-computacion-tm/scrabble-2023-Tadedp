@@ -1,4 +1,5 @@
 from game.models import *
+from game.board import *
 from game.dictionary import Dictionary
 
 class WordIsNotInDictionaryException(Exception): 
@@ -55,12 +56,14 @@ class ScrabbleGame:
         newTiles = self.currentPlayer.giveTiles(positions)
         doubleLettersCounter = 0
         for i in range(len(newTiles)):
+            doubleLetterTile = False
             
             if len(cutMainWordCopy[i:]) > 2 and (cutMainWordCopy[i : i+2] == "LL" or cutMainWordCopy[i : i+2] == "RR" or cutMainWordCopy[i : i+2] == "CH"):
                 doubleLettersCounter += 1
-            
+                doubleLetterTile = True
+                
             if newTiles[i].value == 0:
-                if len(newTiles[i].letter) > 1:
+                if doubleLetterTile:
                     newTiles[i].letter = cutMainWordCopy[i + doubleLettersCounter - 1: i + doubleLettersCounter + 1]
                 else:    
                     newTiles[i].letter = cutMainWordCopy[i + doubleLettersCounter]
@@ -111,12 +114,7 @@ class ScrabbleGame:
         positions = [] 
         while len(cutMainWord) > 0:
             letterNotFound = True
-            if len(cutMainWord) > 2 and (cutMainWord[0 : 2] == "LL" or cutMainWord[0 : 2] == "RR" or cutMainWord[0 : 2] == "CH"):
-                letter = cutMainWord[0 : 2]
-                cutMainWord = cutMainWord[2:]
-            else:
-                letter = cutMainWord[0]
-                cutMainWord = cutMainWord[1:]
+            cutMainWord, letter = self.getLetter(cutMainWord)
                 
             for j in range(len(self.currentPlayer.rack)):
                 if letter == self.currentPlayer.rack[j].letter and not j in positions:
@@ -130,4 +128,12 @@ class ScrabbleGame:
                         positions.append(j)
                         break
         return positions
-        
+    
+    def getLetter(self, cutMainWord: str):
+        if len(cutMainWord) > 2 and (cutMainWord[0 : 2] == "LL" or cutMainWord[0 : 2] == "RR" or cutMainWord[0 : 2] == "CH"):
+            letter = cutMainWord[0 : 2]
+            cutMainWord = cutMainWord[2:]
+        else:
+            letter = cutMainWord[0]
+            cutMainWord = cutMainWord[1:]
+        return cutMainWord, letter    
