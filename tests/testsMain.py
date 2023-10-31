@@ -14,11 +14,11 @@ class TestMain(unittest.TestCase):
     @patch.object(ScrabbleCli, 'getPlayerMove', return_value=1)
     @patch.object(ScrabbleCli, 'getWordInputs', return_value=('HELLO', 0, (7, 7)))
     @patch.object(ScrabbleGame, 'playWord')   
-    @patch.object(ScrabbleGame, 'getPlayers', return_value=(Player(), Player()))
+    @patch.object(ScrabbleGame, 'getPlayers', return_value=[Player(), Player()])
     @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=False)
-    @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 24])
+    @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 22])
     @patch('builtins.print')
-    def testMain(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
+    def testCliPutWord(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
                    patchgetPlayerRack, patchgetPlayerMove, patchgetWordInputs, patchplayWord,
                    patchgetPlayers, patchgetKeepPlayingInputs, patchgetFinalScores, patchPrint):
         main()
