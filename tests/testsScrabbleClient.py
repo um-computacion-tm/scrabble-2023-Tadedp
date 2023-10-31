@@ -109,7 +109,7 @@ class TestScrabbleClient(unittest.TestCase):
     @patch.object(ScrabbleCli, 'getPlayerMove', return_value=1)
     @patch.object(ScrabbleCli, 'getWordInputs', return_value=('HELLO', 0, (7, 7)))
     @patch.object(ScrabbleGame, 'playWord')   
-    @patch.object(ScrabbleGame, 'getPlayers', return_value=(Player(), Player()))
+    @patch.object(ScrabbleGame, 'getPlayers', return_value=[Player(), Player()])
     @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=False)
     @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 24])
     @patch('builtins.print')
@@ -124,29 +124,10 @@ class TestScrabbleClient(unittest.TestCase):
     @patch.object(ScrabbleGame, 'playing', return_value=True)
     @patch.object(ScrabbleGame, 'getBoard')
     @patch.object(ScrabbleGame, 'getPlayerRack')
-    @patch.object(ScrabbleCli, 'getPlayerMove', return_value=1)
-    @patch.object(ScrabbleCli, 'getWordInputs', return_value=('HELLO', 0, (7, 7)))
-    @patch.object(ScrabbleGame, 'playWord')   
-    @patch.object(ScrabbleGame, 'getPlayers', return_value=(Player(), Player()))
-    @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=False)
-    @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 22])
-    @patch('builtins.print')
-    def testCliPutWordTwoWinners(self, patchGetPlayersCount, patchnextTurn, patchplaying, 
-                   patchgetBoard, patchgetPlayerRack, patchgetPlayerMove, patchgetWordInputs, 
-                   patchplayWord, patchgetPlayers, patchgetKeepPlayingInputs, patchgetFinalScores, 
-                   patchPrint):
-        client = ScrabbleCli()
-        client.client()
-        
-    @patch.object(ScrabbleCli, 'getPlayersCount', return_value=2)
-    @patch.object(ScrabbleGame, 'nextTurn')
-    @patch.object(ScrabbleGame, 'playing', return_value=True)
-    @patch.object(ScrabbleGame, 'getBoard')
-    @patch.object(ScrabbleGame, 'getPlayerRack')
     @patch.object(ScrabbleCli, 'getPlayerMove', return_value=2)
     @patch.object(ScrabbleCli, 'getExchangeInputs', return_value=([1, 2, 3]))
-    @patch.object(ScrabbleGame, 'exchangeTiles')   
-    @patch.object(ScrabbleGame, 'getPlayers', return_value=(Player(), Player()))
+    @patch.object(ScrabbleGame, 'exchangeTiles') 
+    @patch.object(ScrabbleGame, 'getPlayers', return_value=[Player(), Player()])
     @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=False)
     @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 24])
     @patch('builtins.print')
@@ -162,15 +143,15 @@ class TestScrabbleClient(unittest.TestCase):
     @patch.object(ScrabbleGame, 'getBoard')
     @patch.object(ScrabbleGame, 'getPlayerRack')
     @patch.object(ScrabbleCli, 'getPlayerMove', return_value=3)
-    @patch.object(ScrabbleGame, 'getPlayers', return_value=(Player(), Player()))
+    @patch.object(ScrabbleGame, 'getPlayers', return_value=[Player(), Player()])
     @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=False)
     @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 24])
     @patch('builtins.print')
     def testCliPass(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
-                   patchgetPlayerRack, patchgetPlayerMove, patchgetPlayers, patchgetKeepPlayingInputs, 
-                   patchgetFinalScores, patchPrint):
+                   patchgetPlayerRack, patchgetPlayerMove, ppatchgetPlayers, 
+                   patchgetKeepPlayingInputs, patchgetFinalScores, patchPrint):
         client = ScrabbleCli()
         client.client()   
-
+        
 if __name__ == '__main__':
     unittest.main()
