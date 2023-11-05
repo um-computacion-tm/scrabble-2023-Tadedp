@@ -21,12 +21,7 @@ class ScrabbleCli:
                 print(scrabbleGame.getPlayerRack())
                 turnStart = False
                 
-            try:
-                move = ScrabbleCli.getPlayerMove()
-            except Exception as e:
-                print(e)
-                continue
-            
+            move = ScrabbleCli.getPlayerMove()
             if move == 1:
                 word, increasingCoordinate, firsTilePosition = ScrabbleCli.getWordInputs()
                 try:
@@ -49,25 +44,34 @@ class ScrabbleCli:
                 consecutivePasses += 1
                 
             
-            print(" ")
-            print("Puntajes:")
-            players = scrabbleGame.getPlayers()
-            for i in range(len(players)):
-                print(">> Puntaje jugador " + str(i + 1) + ": " + str(players[i].score))
-                
-            keepPlaying = ScrabbleCli.getKeepPlayingInputs()
-            if keepPlaying:        
-                if currentPlayer == playersCount:
-                    currentPlayer = 1
-                else:    
-                    currentPlayer += 1         
-                    
-                scrabbleGame.nextTurn()
-                turnStart = True   
-            
-            else:        
+            currentPlayer = ScrabbleCli.endOfTurn(scrabbleGame, currentPlayer, playersCount)    
+            if currentPlayer == 0:        
                 break
+            
+            scrabbleGame.nextTurn()
+            turnStart = True   
         
+        ScrabbleCli.endOfGame(scrabbleGame)
+    
+    def endOfTurn(scrabbleGame: ScrabbleGame, currentPlayer: int, playersCount: int):
+        print(" ")
+        print("Puntajes:")
+        players = scrabbleGame.getPlayers()
+        for i in range(len(players)):
+            print(">> Puntaje jugador " + str(i + 1) + ": " + str(players[i].score))
+            
+        keepPlaying = ScrabbleCli.getKeepPlayingInputs()
+        if keepPlaying:        
+            if currentPlayer == playersCount:
+                currentPlayer = 1
+            else:    
+                currentPlayer += 1         
+            return currentPlayer
+        
+        else:        
+            return 0
+    
+    def endOfGame(scrabbleGame: ScrabbleGame):
         print("")
         print("Resultados finales:")
         winner = 0
@@ -87,7 +91,6 @@ class ScrabbleCli:
         else:
             print("¡El ganador es el jugador " + str(winner + 1) + " con " + str(winnerScore) + " puntos!")
         print("¡Felicidades!")
-        return
     
     def getPlayersCount():
         while True:
