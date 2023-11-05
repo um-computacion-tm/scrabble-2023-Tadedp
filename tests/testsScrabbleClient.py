@@ -103,19 +103,35 @@ class TestScrabbleClient(unittest.TestCase):
     
     @patch.object(ScrabbleCli, 'getPlayersCount', return_value=2)
     @patch.object(ScrabbleGame, 'nextTurn')
-    @patch.object(ScrabbleGame, 'playing', return_value=True)
+    @patch.object(ScrabbleGame, 'playing', side_effect=[True, False])
     @patch.object(ScrabbleGame, 'getBoard')
     @patch.object(ScrabbleGame, 'getPlayerRack')
     @patch.object(ScrabbleCli, 'getPlayerMove', return_value=1)
     @patch.object(ScrabbleCli, 'getWordInputs', return_value=('HELLO', 0, (7, 7)))
     @patch.object(ScrabbleGame, 'playWord')   
     @patch.object(ScrabbleGame, 'getPlayers', return_value=[Player(), Player()])
-    @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=False)
+    @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=True)
     @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 24])
     @patch('builtins.print')
-    def testCliPutWord(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
+    def testCliPlayWord(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
                    patchgetPlayerRack, patchgetPlayerMove, patchgetWordInputs, patchplayWord,
                    patchgetPlayers, patchgetKeepPlayingInputs, patchgetFinalScores, patchPrint):
+        client = ScrabbleCli()
+        client.client()
+        
+    @patch.object(ScrabbleCli, 'getPlayersCount', return_value=2)
+    @patch.object(ScrabbleGame, 'nextTurn')
+    @patch.object(ScrabbleGame, 'playing', side_effect=[True, False])
+    @patch.object(ScrabbleGame, 'getBoard')
+    @patch.object(ScrabbleGame, 'getPlayerRack')
+    @patch.object(ScrabbleCli, 'getPlayerMove', return_value=1)
+    @patch.object(ScrabbleCli, 'getWordInputs', return_value=('HELLO', 0, (7, 7)))
+    @patch.object(ScrabbleGame, 'playWord', side_effect=Exception())   
+    @patch.object(ScrabbleCli, 'endOfGame')
+    @patch('builtins.print')
+    def testCliPlayWordError(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
+                   patchgetPlayerRack, patchgetPlayerMove, patchgetWordInputs, patchplayWord,
+                   patchEndOfGame, patchPrint):
         client = ScrabbleCli()
         client.client()
         
@@ -136,6 +152,22 @@ class TestScrabbleClient(unittest.TestCase):
                    patchgetPlayers, patchgetKeepPlayingInputs, patchgetFinalScores, patchPrint):
         client = ScrabbleCli()
         client.client()
+        
+    @patch.object(ScrabbleCli, 'getPlayersCount', return_value=2)
+    @patch.object(ScrabbleGame, 'nextTurn')
+    @patch.object(ScrabbleGame, 'playing', side_effect=[True, False])
+    @patch.object(ScrabbleGame, 'getBoard')
+    @patch.object(ScrabbleGame, 'getPlayerRack')
+    @patch.object(ScrabbleCli, 'getPlayerMove', return_value=2)
+    @patch.object(ScrabbleCli, 'getExchangeInputs', return_value=([1, 2, 3]))
+    @patch.object(ScrabbleGame, 'exchangeTiles', side_effect=Exception()) 
+    @patch.object(ScrabbleCli, 'endOfGame')
+    @patch('builtins.print')
+    def testCliExchangeTilesError(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
+                   patchgetPlayerRack, patchgetPlayerMove, patchgetExchangeInputs, patchexchangeTiles,
+                   patchendOfGame, patchPrint):
+        client = ScrabbleCli()
+        client.client()
 
     @patch.object(ScrabbleCli, 'getPlayersCount', return_value=2)
     @patch.object(ScrabbleGame, 'nextTurn')
@@ -152,6 +184,23 @@ class TestScrabbleClient(unittest.TestCase):
                    patchgetKeepPlayingInputs, patchgetFinalScores, patchPrint):
         client = ScrabbleCli()
         client.client()   
+        
+    @patch.object(ScrabbleCli, 'getPlayersCount', return_value=2)
+    @patch.object(ScrabbleGame, 'nextTurn')
+    @patch.object(ScrabbleGame, 'playing', side_effect=[True, True, False])
+    @patch.object(ScrabbleGame, 'getBoard')
+    @patch.object(ScrabbleGame, 'getPlayerRack')
+    @patch.object(ScrabbleCli, 'getPlayerMove', return_value=3)
+    @patch.object(ScrabbleGame, 'getPlayers', return_value=[Player(), Player()])
+    @patch.object(ScrabbleCli, 'getKeepPlayingInputs', return_value=True)
+    @patch.object(ScrabbleCli, 'getFinalScores', return_value=[22, 24])
+    @patch('builtins.print')
+    def testCliPassTwoTurns(self, patchGetPlayersCount, patchnextTurn, patchplaying, patchgetBoard, 
+                   patchgetPlayerRack, patchgetPlayerMove, ppatchgetPlayers, 
+                   patchgetKeepPlayingInputs, patchgetFinalScores, patchPrint):
+        client = ScrabbleCli()
+        client.client()   
+        
         
 if __name__ == '__main__':
     unittest.main()
