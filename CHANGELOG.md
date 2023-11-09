@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
- - final player scores prints to be more descriptive.
+ - final player scores printings to be more descriptive.
  - client method to reduce its cognitive complexity by refactoring it, without changing its functionality.  
  
 ## [1.0.1] - 2023-10-29
