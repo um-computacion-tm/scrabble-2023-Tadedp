@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2023-11-8
+
+### Added
+ 
+ - Explanation of Scrabble rules and how to run the game in README.
+
+### Changed
+
+ - final player scores printings to be more descriptive.
+ - client method to reduce its cognitive complexity by refactoring it, without changing its functionality.  
+ 
 ## [1.0.1] - 2023-10-29
 
 ### Fixed
@@ -16,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
  
  - Board class and its test locations to new files to improve maintainability. 
- - various methods to reduce their cognitive complexity by refactoring them without changing its functionality.  
+ - various methods to reduce their cognitive complexity by refactoring them, without changing their functionalitys.  
 
 ## [1.0.0] - 2023-10-11
 

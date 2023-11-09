@@ -16,6 +16,7 @@ class ScrabbleCli:
 
         while scrabbleGame.playing(consecutivePasses):
             if turnStart:
+                print("")
                 print("Turno del jugador " + str(currentPlayer) + ": ")
                 print(scrabbleGame.getBoard())
                 print(scrabbleGame.getPlayerRack())
@@ -28,6 +29,7 @@ class ScrabbleCli:
                     scrabbleGame.playWord(word, increasingCoordinate, firsTilePosition)
                 except Exception as e:
                     print(e)
+                    print("")
                     continue    
                 consecutivePasses = 0
             
@@ -37,6 +39,7 @@ class ScrabbleCli:
                     scrabbleGame.exchangeTiles(positions)
                 except Exception as e:
                     print(e)
+                    print("")
                     continue
                 consecutivePasses = 0
                 
@@ -58,7 +61,7 @@ class ScrabbleCli:
         print("Puntajes:")
         players = scrabbleGame.getPlayers()
         for i in range(len(players)):
-            print(">> Puntaje jugador " + str(i + 1) + ": " + str(players[i].score))
+            print(">> Jugador " + str(i + 1) + ": " + str(players[i].score) + " pts.")
             
         keepPlaying = ScrabbleCli.getKeepPlayingInputs()
         if keepPlaying:        
@@ -74,22 +77,33 @@ class ScrabbleCli:
     def endOfGame(scrabbleGame: ScrabbleGame):
         print("")
         print("Resultados finales:")
-        winner = 0
-        finalScores = ScrabbleCli.getFinalScores(scrabbleGame.getPlayers())
-        for i in range(len(finalScores)):
-            if finalScores[i] > finalScores[winner]:
-                winner = i
-            print(">> Jugador " + str(i + 1) + ": " + str(finalScores[i]))
+        winner = [0]
+        finalScores = []
+        playerScores, playerDiscounts, discountSum = ScrabbleCli.getFinalScores(scrabbleGame.getPlayers())
+        for i in range(len(playerScores)):
+            if playerDiscounts[i] > 0:
+                finalScore = playerScores[i] - playerDiscounts[i]
+                print(">> Jugador " + str(i + 1) + " (-" + str(playerDiscounts[i]) + 
+                      " puntos por fichas restantes): " + str(finalScore) + " pts.")
+            else:
+                finalScore = playerScores[i] + discountSum
+                print(">> Jugador " + str(i + 1) + " (+" + str(discountSum) + 
+                      " puntos por fichas restantes del resto): " + str(finalScore) + " pts.")
+
+            finalScores.append(finalScore)
+            if i > 0 and finalScore == finalScores[winner[0]]:
+                winner.append(i)
+            if finalScore > finalScores[winner[0]]:
+                winner = [i] 
         
         print(" ")
-        winnerScore = finalScores[winner]
-        if finalScores.count(winnerScore) > 1:
-            print("Los ganadores con " + str(winnerScore) + " puntos son: ")
-            for i in range(len(finalScores)):
-                if finalScores[i] == winnerScore:
-                    print(">> Jugador " + str(i + 1))
+        winnerScore = finalScores[winner[0]]
+        if len(winner) > 1:
+            print("Los ganadores, con " + str(winnerScore) + " puntos, son: ")
+            for i in range(len(winner)):
+                print(">> Jugador " + str(winner[i] + 1))
         else:
-            print("¡El ganador es el jugador " + str(winner + 1) + " con " + str(winnerScore) + " puntos!")
+            print("¡El ganador es el jugador " + str(winner[0] + 1) + " con " + str(winnerScore) + " puntos!")
         print("¡Felicidades!")
     
     def getPlayersCount():
@@ -106,7 +120,7 @@ class ScrabbleCli:
     def getPlayerMove():
         while True:
             try: 
-                move = int(input("Seleccione: 1) Colocar palabra ó 2) Robar fichas ó 3) Pasar -> "))
+                move = int(input("Seleccione: 1) Colocar palabra ó 2) Cambiar fichas ó 3) Pasar -> "))
                 if move < 1 or move > 3: 
                     raise ValueError
                 break
@@ -132,8 +146,8 @@ class ScrabbleCli:
                     increasingCoordinate = 1
                 
                 print("Ingrese las coordenadas de la primer letra: ")
-                firstTileRow = int(input(">> Fila: ")) - 1
-                firstTileColumn = int(input(">> Columna: ")) - 1
+                firstTileRow = int(input(">> Fila (1-15): ")) - 1
+                firstTileColumn = int(input(">> Columna (1-15): ")) - 1
                 firstTilePosition = (firstTileRow, firstTileColumn)
                 break
             
@@ -142,7 +156,7 @@ class ScrabbleCli:
         return word, increasingCoordinate, firstTilePosition
 
     def getExchangeInputs(bagLen: int, player: Player):
-        print("Ingrese las fichas que desea cambiar (1 a 7, \"0\" para atril completo, \"T\" terminar): ")
+        print("Ingrese las fichas que desea cambiar (1-7, \"0\" atril completo, \"T\" terminar cambio): ")
         positions = []
         playerRack = player.rack
         while True:
@@ -190,22 +204,16 @@ class ScrabbleCli:
     def getFinalScores(players: list):
         scores = []
         discounts = []
-        emptyRackPlayer = None
+        discountSum = 0
         for i in range(len(players)):
             playerScore = players[i].score
             discount = 0
             if len(players[i].rack) > 1:   
                 for tile in players[i].rack:
                    discount += tile.value
-            else:
-                emptyRackPlayer = i
-                    
-            playerScore = playerScore - discount
+            
+            discountSum += discount        
             discounts.append(discount)
             scores.append(playerScore)
         
-        if emptyRackPlayer != None:
-            for discount in discounts:
-                scores[emptyRackPlayer] += discount
-        
-        return scores                
+        return scores, discounts, discountSum                
