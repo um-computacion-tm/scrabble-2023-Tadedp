@@ -4,7 +4,7 @@
 
 **Scrabble** is a word game in which two to four players compete in forming words with lettered tiles on a board.
 
-This project was designed to be played in **Spanish**.
+This project was designed to be played in **Spanish** language.
 
 ## Running Scrabble
 
@@ -19,16 +19,16 @@ Follow these steps:
     git clone https://github.com/um-computacion-tm/scrabble-2023-Tadedp.git
 ```
 
- - Inside the game directory, run the following command to create a docker image using the project's Dockerfile:
+ - Inside the game directory, run the following command to create a docker image using the project's Dockerfile (you can also run it in a virtual environment):
 
 ```
-    docker build -t [nombre de la imagen] .
+    docker build -t [image name] .
 ```
 
  - Run the docker image using:
 
 ```
-    docker run -it [nombre de la imagen]
+    docker run -it [image name]
 ```
 
  - Enjoy playing Scrabble!
@@ -87,7 +87,7 @@ The first player will play their word so that they use the center star square. T
 
 All players following will play their words by using one or more tiles in their rack to place a word on the board. The main word **must** either use the letters of one or more previously played words or else have at least one of its tiles horizontally or vertically adjacent to an already played word in order to be a valid move. If any words other than the main word are formed, they are also scored.
 
-Any word that is found in the [RAE DLE web page](https://dle.rae.es/) can be used in the game. 
+Any word that can be found by searching for it in the [RAE DLE website](https://dle.rae.es/) can be used in the game. 
 
 After playing tiles on the board, players will draw new tiles to replace those. If there are not enough tiles in the bag to replenish their rack to seven tiles, the player takes all the remaining tiles. 
 
@@ -95,7 +95,7 @@ After playing tiles on the board, players will draw new tiles to replace those. 
 
 The game ends when either all tiles are gone from the bag and a single player has placed all of their tiles or every player makes two consecutive passes (two complete rounds of just passes).
 
-When the game ends, each player will reduce their accumulated score by the sum of the values of the tiles remaining on their racks. If a player ended the game and has no remaining tiles, they will add the sum the values of the remaining tiles of the rest of players to their accumulated score.
+When the game ends, each player will reduce their accumulated score by the sum of the values of the tiles remaining on their racks. If a player ended the game and has no remaining tiles, they will add the sum of the values of the remaining tiles of the rest of players to their accumulated score.
 
 The player with the highest score after all final scores are calculated wins.
 
