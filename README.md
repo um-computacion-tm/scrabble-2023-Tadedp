@@ -85,7 +85,7 @@ When a player exchanges tiles, they can choose to exchange all the tiles they wa
 
 The first player will play their word so that they use the center star square. The star square will offer a double word score to the first word. 
 
-All players following will play their words by using one or more tiles in their rack to place a word on the board. The main word **must** either use the letters of one or more previously played words or else have at least one of its tiles horizontally or vertically adjacent to an already played word in order to be a valid move. If any words other than the main word are formed, they are also scored.
+All players following will play their words by introducing the **COMPLETE** word that they want to play and using one or more tiles in their rack to place them on the board. The main word **must** either use the letters of one or more previously played words or else have at least one of its tiles horizontally or vertically adjacent to an already played word in order to be a valid move. If any words other than the main word are formed, they are also scored.
 
 Any word that can be found by searching for it in the [RAE DLE website](https://dle.rae.es/) can be used in the game. 
 
